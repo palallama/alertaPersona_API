@@ -1,4 +1,4 @@
-import * as model from "./usuario.model.js";
+import * as model from "./alerta.model.js";
 
 export const getUsuarios = async (req, res) => {
 
