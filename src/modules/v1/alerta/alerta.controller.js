@@ -1,33 +1,33 @@
 import * as model from "./alerta.model.js";
 
-export const getUsuarios = async (req, res) => {
+export const getAlertas = async (req, res) => {
 
     try {
-        const usuarios = await model.getUsuarios();
-        res.json(usuarios);
+        const alerta = await model.getAlertas();
+        res.json(alerta);
     } catch (err) {
         res.status(500).json({ error: err});
     }
 }
 
-export const getUsuario = async (req, res) => {
+export const getAlerta = async (req, res) => {
 
     try {
-        const { usuarioId } = req.params;
+        const { aleId } = req.params;
 
-        const usuario = await model.getUsuario(usuarioId);
-        res.json(usuario);
+        const alerta = await model.getAlerta(aleId);
+        res.json(alerta);
     } catch (err) {
         res.status(500).json({ error: err});
     }
 }
 
-export const insertUsuario = async (req, res) => {
+export const insertAlerta = async (req, res) => {
 
     try {
     
-        const usuario = req.params.body;
-        const ok = await model.insertUsuario(usuario);
+        const alerta = req.params.body;
+        const ok = await model.insertAlerta(alerta);
     
         if (ok > 0){
             res.json({ ok: true});
@@ -41,12 +41,12 @@ export const insertUsuario = async (req, res) => {
 
 }
 
-export const updateUsuario = async (req, res) => {
+export const updateAlerta = async (req, res) => {
 
     try {
-        const usuario = req.params.body;
+        const alerta = req.params.body;
 
-        const ok  = await model.getUsuario(usuario);
+        const ok  = await model.getAlerta(alerta);
         if (ok > 0){
             res.json({ ok: true});
         }else{
@@ -58,10 +58,10 @@ export const updateUsuario = async (req, res) => {
 
 }
 
-export const deleteUsuario = async (req, res) => {
+export const deleteAlerta = async (req, res) => {
 
     try {
-        const ok = await model.deleteUsuario(req.params.usuarioId);
+        const ok = await model.deleteAlerta(req.params.aleId);
     
         if (ok > 0){
             res.json({ ok: true});
@@ -73,7 +73,7 @@ export const deleteUsuario = async (req, res) => {
     }
 }
 
-export const iniciarSesion = async (req, res) => {
+/*export const iniciarSesion = async (req, res) => {
 
     try {
         const { mail, password } = req.query;
@@ -88,4 +88,4 @@ export const iniciarSesion = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err});
     }
-}
+//}*/

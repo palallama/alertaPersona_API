@@ -3,13 +3,13 @@ import { pool } from '../../../db.js';
 
 
 /** 
- ** Ver todos los usuarios
+ ** Ver todas las alertas
  *
 */
-export const getUsuarios = async () => {
+export const getAlertas = async () => {
 
     try{
-        const query = 'SELECT * FROM usuario';
+        const query = 'SELECT * FROM alerta';
         let params = [];
 
         const [rows] = await pool.query(query, params);
@@ -20,15 +20,12 @@ export const getUsuarios = async () => {
             const row = rows[i];
 
             response.push({
-                "id": row.usuId,
-                "nombre": row.usuNombre,
-                "apellido": row.usuApellido,
-                "dni": row.usuDni,
-                "telefono": row.usuTelefono,
-                "nroTramite": row.usuNroTramite,
-                "mail": row.usuMail,
-                "validado": row.usuValidado,
-                "activo": row.usuActivo,
+                "idAlerta": row.aleId,
+                "usuarioEmisor": row.aleUsuario,
+                "ubicacionAlerta": row.aleUbi,
+                "estadoAlerta": row.aleEstado,
+                "fechaEmision": row.aleFchEmision,
+                "fechaCierre": row.aleFchCierre,
             });
         };
 
@@ -41,15 +38,15 @@ export const getUsuarios = async () => {
 }
 
 /** 
- ** Ver un usuario por ID
+ ** Ver una alerta por ID
  *
 */
-export const getUsuario = async (usuarioId) => {
+export const getAlerta= async (aleId) => {
 
     try{
-        const query = 'SELECT * FROM usuario WHERE usuId = ?';
+        const query = 'SELECT * FROM usuario WHERE aleId = ?';
         let params = [
-            usuarioId
+            aleId
         ];
 
         const [rows] = await pool.query(query, params);
@@ -60,15 +57,12 @@ export const getUsuario = async (usuarioId) => {
             const row = rows[i];
 
             response = {
-                "id": row.usuId,
-                "nombre": row.usuNombre,
-                "apellido": row.usuApellido,
-                "dni": row.usuDni,
-                "telefono": row.usuTelefono,
-                "nroTramite": row.usuNroTramite,
-                "mail": row.usuMail,
-                "validado": row.usuValidado,
-                "activo": row.usuActivo,
+                "idAlerta": row.aleId,
+                "usuarioEmisor": row.aleUsuario,
+                "ubicacionAlerta": row.aleUbi,
+                "estadoAlerta": row.aleEstado,
+                "fechaEmision": row.aleFchEmision,
+                "fechaCierre": row.aleFchCierre,
             };
         };
 
@@ -81,35 +75,33 @@ export const getUsuario = async (usuarioId) => {
 }
 
 /** 
- ** Crea un nuevo usuario
+ ** Crea una nueva alerta
  *
- *i @param usuario: objeto con los datos necesarios del usuario - especificado mas abajo
+ *i @param alerta: objeto con los datos necesarios de la alerta - especificado mas abajo
 */
-export const insertUsuario = async (usuario) => {
+export const insertAlerta = async (alerta) => {
      
     /** 
     {
-        "nombre": "julian",             //* nombre del usuario
-        "apellido": "torossian",        //* apellido del usuario
-        "dni": 99999999,                //* apellido del usuario
-        "telefono": "99999999",         //* apellido del usuario
-        "nroTramite": "12345678901",    //* apellido del usuario
-        "mail": "mail@mail.com",        //* mail del usuario
-        "password": 123,                //* contraseña del usuario
+        "idAlerta": "1",                                    //* id de la alerta
+        "usuarioEmisor": "Pepe Perez",                       //* usuario emisor
+        "ubicacionAlerta": "Av. Siempre Falsa 123",               //* ubicación alerta
+        "estadoAlerta": "Activa",                            //* estado alerta
+        "fechaEmision": "12/06/2023 18:34:03",          //* fecha emisión
+        "fechaCierre": "12/06/2023 18:35:15",           //* fecha cierre
     }
     **/
 
     try{
 
-        const query = 'INSERT INTO usuario(usuNombre, usuApellido, usuDni, usuTelefono, usuNroTramite, usuMail, usuPass) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const query = 'INSERT INTO alerta(aleId, aleUsuario , aleUbi, aleEstado, aleFchEmision, aleFchCierre) VALUES (?, ?, ?, ?, ?, ?, ?)';
         let params = [
-            usuario.nombre,
-            usuario.apellido,
-            usuario.dni,
-            usuario.telefono,
-            usuario.nroTramite,
-            usuario.mail,
-            usuario.password
+            alerta.idAlerta,
+            alerta.usuarioEmisor,
+            alerta.ubicacionAlerta,
+            alerta.estadoAlerta,
+            alerta.fechaEmision,
+            alerta.fechaCierre,
         ];
 
         const [rows] = await pool.query(query, params);
@@ -122,37 +114,32 @@ export const insertUsuario = async (usuario) => {
 }
 
 /** 
- ** Crea un nuevo usuario
- *
- *i @param usuario: objeto con los datos necesarios del usuario - especificado mas abajo
+ ** Actualizar alerta
+ *i @param alerta: objeto con los datos necesarios de la alerta - especificado mas abajo
 */
-export const updateUsuario = async (usuario) => {
+export const updateAlerta = async (alerta) => {
      
     /** 
     {
-        "id": 1                         //* id de usuario
-        "nombre": "julian",             //* nombre del usuario
-        "apellido": "torossian",        //* apellido del usuario
-        "dni": 99999999,                //* apellido del usuario
-        "telefono": "99999999",         //* apellido del usuario
-        "nroTramite": "12345678901",    //* apellido del usuario
-        "mail": "mail@mail.com",        //* mail del usuario
-        "password": 123,                //* contraseña del usuario
+        "idAlerta": "1",                                    //* id de la alerta
+        "usuarioEmisor": "Pepe Perez",                       //* usuario emisor
+        "ubicacionAlerta": "Av. Siempre Falsa 123",               //* ubicación alerta
+        "estadoAlerta": "Activa",                            //* estado alerta
+        "fechaEmision": "12/06/2023 18:34:03",          //* fecha emisión
+        "fechaCierre": "12/06/2023 18:35:15",           //* fecha cierre
     }
     **/
 
     try{
 
-        const query = 'UPDATE usuario SET usuNombre = ?, usuApellido = ?, usuDni = ?, usuTelefono = ?, usuNroTramite = ?, usuMail =?, usuPass = ? WHERE usuId = ?';
+        const query = 'UPDATE alerta SET  aleUsuario = ?, aleUbi = ?, aleEstado = ?, aleFchEmision = ?, aleFchCierre =? WHERE aleId = ?';
         let params = [
-            usuario.nombre,
-            usuario.apellido,
-            usuario.dni,
-            usuario.telefono,
-            usuario.nroTramite,
-            usuario.mail,
-            usuario.password,
-            usuario.id
+         
+            alerta.usuarioEmisor,
+            alerta.ubicacionAlerta,
+            alerta.estadoAlerta,
+            alerta.fechaEmision,
+            alerta.fechaCierre,
         ];
 
         const [rows] = await pool.query(query, params);
@@ -165,16 +152,16 @@ export const updateUsuario = async (usuario) => {
 }
 
 /** 
- ** Eliminar un nuevo usuario
+ ** Eliminar una alerta
  *
- *i @param usuarioId: id del usuario a eliminar
+ *i @param alertaId: id de la alerta a eliminar
 */
-export const deleteUsuario = async (usuarioId) => {
+export const deleteAlerta = async (alertaId) => {
 
     try{
-        const query = 'DELETE FROM usuario WHERE usuId = ?';
+        const query = 'DELETE FROM alerta WHERE aleId = ?';
         let params = [
-            usuarioId
+            alertaId
         ];
 
         const [rows] = await pool.query(query, params);
@@ -191,7 +178,7 @@ export const deleteUsuario = async (usuarioId) => {
  *
  *i @param mail: mail del usuario
  *i @param password: contraseña del usuario
-*/
+
 export const existeUsuario = async (mail, password) => {
 
     try {
@@ -210,4 +197,4 @@ export const existeUsuario = async (mail, password) => {
     }
 
 
-}
+}*/
