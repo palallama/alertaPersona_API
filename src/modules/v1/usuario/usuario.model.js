@@ -86,7 +86,6 @@ export const getUsuario = async (usuarioId) => {
  *i @param usuario: objeto con los datos necesarios del usuario - especificado mas abajo
 */
 export const insertUsuario = async (usuario) => {
-     
     /** 
     {
         "nombre": "julian",             //* nombre del usuario
@@ -127,7 +126,6 @@ export const insertUsuario = async (usuario) => {
  *i @param usuario: objeto con los datos necesarios del usuario - especificado mas abajo
 */
 export const updateUsuario = async (usuario) => {
-     
     /** 
     {
         "id": 1                         //* id de usuario
@@ -202,10 +200,15 @@ export const existeUsuario = async (mail, password) => {
             password
         ];
         const [rows] = await pool.query(query, params);
-        
-        return 1;
-        
+
+        if (rows[0]){
+            // console.log(rows[0].usuId);
+            return rows[0].usuId;
+        }
+        return 0;
+
     } catch (err) {
+        // console.log(err);
         throw new Error(err);
     }
 
