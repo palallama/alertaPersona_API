@@ -1,16 +1,17 @@
 import express from 'express';
-import * as controller from './usuario.controller.js';
+import * as controller from './alerta.controller.js';
 
-const usuarioRouter = express.Router();
+const alertaRouter = express.Router();
 
 
-usuarioRouter.get('/iniciarSesion', controller.iniciarSesion);
+alertaRouter.get('/getAlertas', controller.getAlertas);
+alertaRouter.get('/:aleId', controller.getAlerta);
 
-usuarioRouter.get('/', controller.getUsuarios);
-usuarioRouter.get('/:usuarioId', controller.getUsuario);
 
-usuarioRouter.post('/', controller.insertUsuario);
-usuarioRouter.put('/', controller.updateUsuario);
-usuarioRouter.delete('/:usuarioId', controller.deleteUsuario);
 
-export default usuarioRouter;
+
+alertaRouter.post('/', controller.insertAlerta);
+alertaRouter.put('/', controller.updateAlerta);
+alertaRouter.delete('/:aleId', controller.deleteAlerta);
+
+export default alertaRouter;

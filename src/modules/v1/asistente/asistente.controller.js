@@ -1,33 +1,33 @@
-import * as model from "./alerta.model.js";
+import * as model from "./asistente.model.js";
 
-export const getAlertas = async (req, res) => {
+export const getAsistentes = async (req, res) => {
 
     try {
-        const alerta = await model.getAlertas();
-        res.json(alerta);
+        const asistente = await model.getAsistentes();
+        res.json(asistente);
     } catch (err) {
         res.status(500).json({ error: err});
     }
 }
 
-export const getAlerta = async (req, res) => {
+export const getAsistente = async (req, res) => {
 
     try {
-        const { aleId } = req.params;
+        const { alerta, usuario } = req.params;
 
-        const alerta = await model.getAlerta(aleId);
-        res.json(alerta);
+        const asistente = await model.getAsistente(alerta, usuario);
+        res.json(asistente);
     } catch (err) {
         res.status(500).json({ error: err});
     }
 }
 
-export const insertAlerta = async (req, res) => {
+export const insertAsistente = async (req, res) => {
 
     try {
     
-        const alerta = req.params.body;
-        const ok = await model.insertAlerta(alerta);
+        const asistente = req.params.body;
+        const ok = await model.insertAsistente(asistente);
     
         if (ok > 0){
             res.json({ ok: true});
@@ -41,12 +41,12 @@ export const insertAlerta = async (req, res) => {
 
 }
 
-export const updateAlerta = async (req, res) => {
+export const updateAsistente = async (req, res) => {
 
     try {
-        const alerta = req.params.body;
+        const asistente = req.params.body;
 
-        const ok  = await model.getAlerta(alerta);
+        const ok  = await model.getAsistente(asistente);
         if (ok > 0){
             res.json({ ok: true});
         }else{
@@ -58,10 +58,10 @@ export const updateAlerta = async (req, res) => {
 
 }
 
-export const deleteAlerta = async (req, res) => {
+export const deleteAsistente = async (req, res) => {
 
     try {
-        const ok = await model.deleteAlerta(req.params.aleId);
+        const ok = await model.deleteAsistente(req.params.alerta, req.params.usuario);
     
         if (ok > 0){
             res.json({ ok: true});

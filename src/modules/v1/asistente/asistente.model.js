@@ -6,10 +6,10 @@ import { pool } from '../../../db.js';
  ** Ver todas las alertas
  *
 */
-export const getAlertas = async () => {
+export const getAsistentes = async () => {
 
     try{
-        const query = 'SELECT * FROM alerta';
+        const query = 'SELECT * FROM asistente';
         let params = [];
 
         const [rows] = await pool.query(query, params);
@@ -20,12 +20,10 @@ export const getAlertas = async () => {
             const row = rows[i];
 
             response.push({
-                "idAlerta": row.aleId,
-                "usuarioEmisor": row.aleUsuario,
-                "ubicacionAlerta": row.aleUbi,
-                "estadoAlerta": row.aleEstado,
-                "fechaEmision": row.aleFchEmision,
-                "fechaCierre": row.aleFchCierre,
+                "alerta": row.asisAlerta,
+                "usuario": row.asisUsuario,
+                "estado": row.asisEstado,
+                "observacion": row.asisObs,
             });
         };
 
@@ -41,12 +39,12 @@ export const getAlertas = async () => {
  ** Ver una alerta por ID
  *
 */
-export const getAlerta= async (aleId) => {
+export const getAsistente= async (asisAlerta, asisUsuario) => {
 
     try{
-        const query = 'SELECT *, ST_Longitude(alertaUbi) AS longitude, ST_Latitude(alertaUbi) AS latitude FROM alerta WHERE aleId = ?';
+        const query = 'SELECT * FROM asistente WHERE asisAlerta = ? &&  asisUsuario = ?';
         let params = [
-            aleId
+            alerta, usuario
         ];
 
         const [rows] = await pool.query(query, params);
@@ -57,12 +55,10 @@ export const getAlerta= async (aleId) => {
             const row = rows[i];
 
             response = {
-                "idAlerta": row.aleId,
-                "usuarioEmisor": row.aleUsuario,
-                "ubicacionAlerta": row.aleUbi,
-                "estadoAlerta": row.aleEstado,
-                "fechaEmision": row.aleFchEmision,
-                "fechaCierre": row.aleFchCierre,
+                "alerta": row.asisAlerta,
+                "usuario": row.asisUsuario,
+                "estado": row.asisEstado,
+                "observacion": row.asisObs,
             };
         };
 
@@ -77,9 +73,9 @@ export const getAlerta= async (aleId) => {
 /** 
  ** Crea una nueva alerta
  *
- *i @param alerta: objeto con los datos necesarios de la alerta - especificado mas abajo
+ *i @param asistente: objeto con los datos necesarios de la alerta - especificado mas abajo
 */
-export const insertAlerta = async (alerta) => {
+export const insertAsistente = async (asistente) => {
      
     /** 
     {
@@ -94,14 +90,13 @@ export const insertAlerta = async (alerta) => {
 
     try{
                       
-        const query = 'INSERT INTO alerta(aleId, alertaUsuario, alertaUbi, alertaEstado, aleFchEmision, aleFchCierre) VALUES (?, ?, ST_GeomFromText(\'POINT(? ?)\', 4326), \'I\', ?, ?, ?)';
+        const query = 'INSERT INTO asistente(asisAlerta, asisUsuario, asisEstado, asisObs) VALUES (?, ?, ?, ?)';
         let params = [
-            alerta.id,
-            alerta.emisor,
-            alerta.ubicacion,
-            alerta.estado,
-            alerta.fechaEmision,
-            alerta.fechaCierre,
+            asistente.alerta,
+            asistente.usuario,
+            asistente.estado,
+            asistente.observacion,
+            
         ];
 
         const [rows] = await pool.query(query, params);
@@ -115,9 +110,9 @@ export const insertAlerta = async (alerta) => {
 
 /** 
  ** Actualizar alerta
- *i @param alerta: objeto con los datos necesarios de la alerta - especificado mas abajo
+ *i @param asistente: objeto con los datos necesarios de la alerta - especificado mas abajo
 */
-export const updateAlerta = async (alerta) => {
+export const updateAsistente = async (asistente) => {
      
     /** 
     {
@@ -132,14 +127,14 @@ export const updateAlerta = async (alerta) => {
 
     try{
 
-        const query = 'UPDATE alerta SET  aleUsuario = ?, aleUbi = ?, aleEstado = ?, aleFchEmision = ?, aleFchCierre =? WHERE aleId = ?';
+        const query = 'UPDATE asistente SET asisEstado = ?, asisObs = ? WHERE asisAlerta = ? and asisUsuario = ?';
         let params = [
-         
-            alerta.emisor,
-            alerta.ubicacion,
-            alerta.estado,
-            alerta.fechaEmision,
-            alerta.fechaCierre,
+
+            asistente.estado,
+            asistente.observacion,
+            asistente.alerta,
+            asistente.usuario,
+            
         ];
 
         const [rows] = await pool.query(query, params);
@@ -154,14 +149,15 @@ export const updateAlerta = async (alerta) => {
 /** 
  ** Eliminar una alerta
  *
- *i @param alertaId: id de la alerta a eliminar
+ *i @param asistenteId: id de la alerta a eliminar
 */
-export const deleteAlerta = async (alertaId) => {
+export const deleteAsistente = async (alerta, usuario) => {
 
     try{
-        const query = 'DELETE FROM alerta WHERE aleId = ?';
+        const query = 'DELETE FROM asistente WHERE asisAlerta = ? and asisUsuario = ?';
         let params = [
-            alertaId
+           alerta,
+           usuario,
         ];
 
         const [rows] = await pool.query(query, params);
