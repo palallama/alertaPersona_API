@@ -80,7 +80,7 @@ export const getAlerta= async (aleId) => {
  *i @param alerta: objeto con los datos necesarios de la alerta - especificado mas abajo
 */
 export const insertAlerta = async (alerta) => {
-     
+
     /** 
     {
         "idAlerta": "1",                                    //* id de la alerta
@@ -93,7 +93,7 @@ export const insertAlerta = async (alerta) => {
     **/
 
     try{
-                      
+
         const query = 'INSERT INTO alerta(aleId, alertaUsuario, alertaUbi, alertaEstado, aleFchEmision, aleFchCierre) VALUES (?, ?, ST_GeomFromText(\'POINT(? ?)\', 4326), \'I\', ?, ?, ?)';
         let params = [
             alerta.id,
@@ -118,7 +118,7 @@ export const insertAlerta = async (alerta) => {
  *i @param alerta: objeto con los datos necesarios de la alerta - especificado mas abajo
 */
 export const updateAlerta = async (alerta) => {
-     
+
     /** 
     {
         "idAlerta": "1",                                    //* id de la alerta
@@ -134,7 +134,7 @@ export const updateAlerta = async (alerta) => {
 
         const query = 'UPDATE alerta SET  aleUsuario = ?, aleUbi = ?, aleEstado = ?, aleFchEmision = ?, aleFchCierre =? WHERE aleId = ?';
         let params = [
-         
+
             alerta.emisor,
             alerta.ubicacion,
             alerta.estado,

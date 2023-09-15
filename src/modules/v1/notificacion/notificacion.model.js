@@ -6,7 +6,7 @@ import { pool } from '../../../db.js';
  ** Ver todos los usuarios
  *
 */
-export const getNotis = async () => {
+export const getNotificaciones = async () => {
 
     try{
         const query = 'SELECT * FROM notificacion';
@@ -38,7 +38,7 @@ export const getNotis = async () => {
  ** Ver un usuario por ID
  *
 */
-export const getNoti = async (notiId) => {
+export const getNotificacion = async (notiId) => {
 
     try{
         const query = 'SELECT * FROM notificacion WHERE notiId = ?';
@@ -48,16 +48,10 @@ export const getNoti = async (notiId) => {
 
         const [rows] = await pool.query(query, params);
 
-        let response = null;
-            
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-
-            response = {
-                "id": row.notiId,
-                "usuario": row.notiUsuario,
-                "estado": row.notiEstado,
-            };
+        let response = {
+            "id": rows[i].notiId,
+            "usuario": rows[i].notiUsuario,
+            "estado": rows[i].notiEstado,
         };
 
         return response;
@@ -69,32 +63,35 @@ export const getNoti = async (notiId) => {
 }
 
 /** 
- ** Crea un nuevo usuario
+ ** Crea una nueva notificacion
  *
  *i @param notificacion: objeto con los datos necesarios del usuario - especificado mas abajo
 */
-export const insertNoti = async (notificacion) => {
-     
+export const insertNotificacion = async (notificacion) => {
+
     /** 
     {
-         "id": row.notiId,
-          "usuario": row.notiUsuario,
-          "estado": row.notiEstado,
+        "id": row.notiId,
+        "usuario": row.notiUsuario,
+        "estado": row.notiEstado
     }
     **/
 
     try{
 
-        const query = 'INSERT INTO notificacion(notiId, notiUsuario, notiEstado) VALUES (?, ?, ?)';
+        const query = 'INSERT INTO notificacion(notiUsuario, notiEstado) VALUES (?, "I")';
         let params = [
-            notificacion.id,
             notificacion.usuario,
-            notificacion.estado,
-         
+            notificacion.estado
         ];
-
         const [rows] = await pool.query(query, params);
-        return 1;
+        const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);
+
+        return {
+            "id": id[0].id,
+            "estado": "I",
+            ...notificacion
+        };
 
     }catch (err){
         throw new Error(err);
@@ -107,13 +104,13 @@ export const insertNoti = async (notificacion) => {
  *
  *i @param notificacion: objeto con los datos necesarios del usuario - especificado mas abajo
 */
-export const updateNoti = async (notificacion) => {
-     
+export const updateNotificacion = async (notificacion) => {
+
     /** 
     {
-             notificacion.id,
-            notificacion.usuario,
-            notificacion.estado,
+        notificacion.id,
+        notificacion.usuario,
+        notificacion.estado,
     }
     **/
 
@@ -121,7 +118,6 @@ export const updateNoti = async (notificacion) => {
 
         const query = 'UPDATE notificacion SET notiUsuario = ?, notiEstado = ? WHERE notiId = ?';
         let params = [
-           
             notificacion.usuario,
             notificacion.estado,
         ];
@@ -140,7 +136,7 @@ export const updateNoti = async (notificacion) => {
  *
  *i @param notiId: id del usuario a eliminar
 */
-export const deleteNoti = async (notiId) => {
+export const deleteNotificacion = async (notiId) => {
 
     try{
         const query = 'DELETE FROM notificacion WHERE notiId = ?';
@@ -149,36 +145,10 @@ export const deleteNoti = async (notiId) => {
         ];
 
         const [rows] = await pool.query(query, params);
-        return 1;
+        return notiId;
 
     }catch (err){
         throw new Error(err);
     }
 
 }
-
-/** 
- ** Corrobora que existe el usuario para el inicio de sesion
- *
- *i @param mail: mail del usuario
- *i @param password: contraseña del usuario
-
-export const existeUsuario = async (mail, password) => {
-
-    try {
-
-        let query = 'SELECT usuId FROM usuario WHERE (usuMail = ? AND usuPass = ?) AND usuActivo = true';
-        let params = [
-            mail,
-            password
-        ];
-        const [rows] = await pool.query(query, params);
-        
-        return 1;
-        
-    } catch (err) {
-        throw new Error(err);
-    }
-
-
-}*/

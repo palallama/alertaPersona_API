@@ -7,9 +7,8 @@ const asistenteRouter = express.Router();
 asistenteRouter.get('/getAsistentes', controller.getAsistentes);
 asistenteRouter.get('/:alerta/:usuario', controller.getAsistente);
 
-
 asistenteRouter.post('/', controller.insertAsistente);
-asistenteRouter.put('/', controller.updateAsistente);
-asistenteRouter.delete('/:asistenteId', controller.deleteAsistente);
+asistenteRouter.patch('/:alerta/:usuario', controller.updateAsistente);
+asistenteRouter.delete('/:alerta/:usuario', controller.deleteAsistente);
 
 export default asistenteRouter;

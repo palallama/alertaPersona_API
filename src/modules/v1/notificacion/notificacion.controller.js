@@ -1,6 +1,7 @@
 import * as model from "./notificacion.model.js";
+import * as validador from "./notificacion.validator.js";
 
-export const getNotis = async (req, res) => {
+export const getNotificaciones = async (req, res) => {
 
     try {
         const notis = await model.getNotis();
@@ -10,7 +11,7 @@ export const getNotis = async (req, res) => {
     }
 }
 
-export const getNoti = async (req, res) => {
+export const getNotificacion = async (req, res) => {
 
     try {
         const { notiId } = req.params;
@@ -22,43 +23,55 @@ export const getNoti = async (req, res) => {
     }
 }
 
-export const insertNoti = async (req, res) => {
+export const insertNotificacion = async (req, res) => {
 
     try {
+
+        const resultado = validador.validarNotificacion(req.body);
+
+        if (!resultado.success) {
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const nuevaNotificacion = await model.insertNotificacion(resultado.data);
     
-        const noti = req.params.body;
-        const ok = await model.insertNoti(noti);
-    
-        if (ok > 0){
-            res.json({ ok: true});
+        if (nuevaNotificacion != null){
+            res.status(201).json(nuevaNotificacion);
         }else{
-            res.status(404).json({ error: "error"});
+            res.status(404).send('error');
         }
 
     } catch (err) {
+        // console.log(err);
         res.status(500).json(err);
     }
 
 }
 
-export const updateNoti = async (req, res) => {
+export const updateNotificacion = async (req, res) => {
 
     try {
-        const noti = req.params.body;
+        const resultado = validador.validacionParcialNotificacion(req.body);
 
-        const ok  = await model.getNoti(noti);
-        if (ok > 0){
-            res.json({ ok: true});
-        }else{
-            res.status(404).json({ error: "error"});
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
         }
+        const notificacion = await model.updateNotificacion(resultado.data);
+    
+        if (notificacion != null){
+            res.status(201).json(notificacion);
+        }else{
+            res.status(404).send('error');
+        }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        // console.log(err);
+        res.status(500).json(err);
     }
 
 }
 
-export const deleteNoti = async (req, res) => {
+export const deleteNotificacion = async (req, res) => {
 
     try {
         const ok = await model.deleteNoti(req.params.notiId);
@@ -72,20 +85,3 @@ export const deleteNoti = async (req, res) => {
         res.status(500).json({ error: err});
     }
 }
-/*
-export const iniciarSesion = async (req, res) => {
-
-    try {
-        const { mail, password } = req.query;
-
-        const ok = await model.existeUsuario(mail, password);
-    
-        if (ok > 0){
-            res.json({ ok: true});
-        }else{
-            res.status(404).json({ error: "error"});
-        }
-    } catch (err) {
-        res.status(500).json({ error: err});
-    }
-}*/
