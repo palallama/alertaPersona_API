@@ -3,11 +3,13 @@ import * as controller from './notificacion.controller.js';
 
 const notificacionRouter = express.Router();
 
-usuarioRouter.get('/', controller.getNotis);
-usuarioRouter.get('/:notiId', controller.getNoti);
+notificacionRouter.get('/', controller.getNotificaciones);
+notificacionRouter.get('/:notificacionId', controller.getNotificacion);
 
-usuarioRouter.post('/', controller.insertNoti);
-usuarioRouter.put('/', controller.updateNoti);
-usuarioRouter.delete('/:notiId', controller.deleteNoti);
+notificacionRouter.post('/', controller.insertNotificacion);
+notificacionRouter.patch('/:notificacionId', controller.updateNotificacion);
+notificacionRouter.delete('/:notificacionId', controller.deleteNotificacion);
+
+notificacionRouter.post('/accion', );
 
 export default notificacionRouter;

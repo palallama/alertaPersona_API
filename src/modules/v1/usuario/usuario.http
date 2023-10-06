@@ -1,0 +1,34 @@
+
+
+# get usuarios
+GET http://localhost:4000/api/v1/usuario/
+
+###
+
+# get usuario
+GET http://localhost:4000/api/v1/usuario/4
+# auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoibWFpbEBtYWlsLmNvbSIsImlkIjo0LCJpYXQiOjE2OTY0NjE2MjMsImV4cCI6MTY5NjQ2NTIyM30.QVQUXvc_-YtY3nXXiMG1ZDL6zdXQvHmQzD0VPA65y8o
+
+###
+
+# Insert usuario
+
+POST http://localhost:4000/api/v1/usuario/
+Content-Type: application/json
+
+{
+    "nombre": "juli2",
+    "apellido": "toro",
+    "dni": "99999999",
+    "telefono": "2944909090",
+    "nroTramite": "12345678901",
+    "mail": "mail@mail.com",
+    "password": "123"
+}
+
+###
+
+# test iniciar sesion
+GET http://localhost:4000/api/v1/usuario/iniciarSesion?mail=mail@mail.com&password=123
+
+###

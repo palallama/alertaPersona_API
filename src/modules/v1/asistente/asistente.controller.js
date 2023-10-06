@@ -1,4 +1,5 @@
 import * as model from "./asistente.model.js";
+import * as validador from "./asistente.validator.js";
 
 export const getAsistentes = async (req, res) => {
 
@@ -13,29 +14,45 @@ export const getAsistentes = async (req, res) => {
 export const getAsistente = async (req, res) => {
 
     try {
-        const { alerta, usuario } = req.params;
+        const resultado = validador.validacionParcialAsistente( { "alerta": req.params.alerta, "usuario": req.params.usuario } );
 
-        const asistente = await model.getAsistente(alerta, usuario);
-        res.json(asistente);
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const ok = await model.getAsistente(resultado.data.alerta, resultado.data.usuario);
+    
+        if (ok > 0){
+            res.status(201).json({ ok: true });
+        }else{
+            res.status(404).send('error');
+        }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        // console.log(err);
+        res.status(500).json(err);
     }
 }
 
 export const insertAsistente = async (req, res) => {
 
     try {
+        const resultado = validador.validarAsistente(req.body);
+
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const nuevoAsistente = await model.insertAsistente(resultado.data);
     
-        const asistente = req.params.body;
-        const ok = await model.insertAsistente(asistente);
-    
-        if (ok > 0){
-            res.json({ ok: true});
+        if (nuevoAsistente != null){
+            res.status(201).json(nuevoAsistente);
         }else{
-            res.status(404).json({ error: "error"});
+            res.status(404).send('error');
         }
 
     } catch (err) {
+        // console.log(err);
         res.status(500).json(err);
     }
 
@@ -44,16 +61,23 @@ export const insertAsistente = async (req, res) => {
 export const updateAsistente = async (req, res) => {
 
     try {
-        const asistente = req.params.body;
+        const resultado = validador.validacionParcialAsistente(req.body);
 
-        const ok  = await model.getAsistente(asistente);
-        if (ok > 0){
-            res.json({ ok: true});
-        }else{
-            res.status(404).json({ error: "error"});
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
         }
+        const asistente = await model.updateAsistente(resultado.data);
+    
+        if (asistente != null){
+            res.status(201).json(asistente);
+        }else{
+            res.status(404).send('error');
+        }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        // console.log(err);
+        res.status(500).json(err);
     }
 
 }
@@ -61,31 +85,23 @@ export const updateAsistente = async (req, res) => {
 export const deleteAsistente = async (req, res) => {
 
     try {
-        const ok = await model.deleteAsistente(req.params.alerta, req.params.usuario);
+        const resultado = validador.validacionParcialAsistente( { "alerta": req.params.alerta, "usuario": req.params.usuario } );
+
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const ok = await model.deleteAsistente(resultado.data.alerta, resultado.data.usuario);
     
         if (ok > 0){
-            res.json({ ok: true});
+            res.status(201).json({ ok: true });
         }else{
-            res.status(404).json({ error: "error"});
+            res.status(404).send('error');
         }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        // console.log(err);
+        res.status(500).json(err);
     }
+
 }
-
-/*export const iniciarSesion = async (req, res) => {
-
-    try {
-        const { mail, password } = req.query;
-
-        const ok = await model.existeUsuario(mail, password);
-    
-        if (ok > 0){
-            res.json({ ok: true});
-        }else{
-            res.status(404).json({ error: "error"});
-        }
-    } catch (err) {
-        res.status(500).json({ error: err});
-    }
-//}*/

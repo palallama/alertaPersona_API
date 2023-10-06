@@ -110,9 +110,15 @@ export const insertUsuario = async (usuario) => {
             usuario.mail,
             usuario.password
         ];
-
         const [rows] = await pool.query(query, params);
-        return 1;
+        const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);
+        
+        let usuarioN = {
+            "id": id[0].id,
+            ...usuario
+        }
+
+        return usuarioN;
 
     }catch (err){
         throw new Error(err);
@@ -154,7 +160,8 @@ export const updateUsuario = async (usuario) => {
         ];
 
         const [rows] = await pool.query(query, params);
-        return 1;
+
+        return usuario;
 
     }catch (err){
         throw new Error(err);

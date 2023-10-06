@@ -1,10 +1,14 @@
 import * as model from "./alerta.model.js";
+import * as validador from "./alerta.validator.js";
+
+import * as notificacionModel from '../notificacion/notificacion.model.js';
+import * as usuarioModel from '../usuario/usuario.model.js';
 
 export const getAlertas = async (req, res) => {
 
     try {
         const alerta = await model.getAlertas();
-        res.json(alerta);
+        res.status(200).json(alerta);
     } catch (err) {
         res.status(500).json({ error: err});
     }
@@ -13,29 +17,49 @@ export const getAlertas = async (req, res) => {
 export const getAlerta = async (req, res) => {
 
     try {
-        const { aleId } = req.params;
+        const resultado = validador.validacionParcialAlerta( { "id": parseInt(req.params.alertaId) } );
 
-        const alerta = await model.getAlerta(aleId);
-        res.json(alerta);
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const alerta = await model.getAlerta(resultado.data.id);
+    
+        if (alerta){
+            res.status(201).json(alerta);
+        }else{
+            res.status(404).send('error');
+        }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        // console.log(err);
+        res.status(500).json(err);
     }
+    
 }
 
 export const insertAlerta = async (req, res) => {
 
     try {
+        const resultado = validador.validarAlerta( req.body );
+
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const nuevaAlerta = await model.insertAlerta(resultado.data);
     
-        const alerta = req.params.body;
-        const ok = await model.insertAlerta(alerta);
-    
-        if (ok > 0){
-            res.json({ ok: true});
+        if (nuevaAlerta){
+
+            // emitirAlerta(nuevaAlerta);
+
+            res.status(201).json(nuevaAlerta);
         }else{
-            res.status(404).json({ error: "error"});
+            res.status(404).send('error');
         }
 
     } catch (err) {
+        console.log(err);
         res.status(500).json(err);
     }
 
@@ -44,16 +68,23 @@ export const insertAlerta = async (req, res) => {
 export const updateAlerta = async (req, res) => {
 
     try {
-        const alerta = req.params.body;
+        const resultado = validador.validacionParcialAlerta( req.body );
 
-        const ok  = await model.getAlerta(alerta);
-        if (ok > 0){
-            res.json({ ok: true});
-        }else{
-            res.status(404).json({ error: "error"});
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
         }
+        const alerta = await model.updateAlerta(resultado.data);
+    
+        if (alerta){
+            res.status(201).json(alerta);
+        }else{
+            res.status(404).send('error');
+        }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        // console.log(err);
+        res.status(500).json(err);
     }
 
 }
@@ -61,31 +92,56 @@ export const updateAlerta = async (req, res) => {
 export const deleteAlerta = async (req, res) => {
 
     try {
-        const ok = await model.deleteAlerta(req.params.aleId);
+        const resultado = validador.validacionParcialAlerta( { "id": req.params.alertaId } );
+
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const ok = await model.deleteAlerta(resultado.data.id);
     
         if (ok > 0){
-            res.json({ ok: true});
+            res.status(201).json({ ok: true });
         }else{
-            res.status(404).json({ error: "error"});
+            res.status(404).send('error');
         }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        // console.log(err);
+        res.status(500).json(err);
     }
+
 }
 
-/*export const iniciarSesion = async (req, res) => {
+const emitirAlerta = async ( alerta ) => {
+
+// 1. generar las notificaciones para los usuarios menos el emisor
+// 2. enviar las notificaciones a los usuarios
 
     try {
-        const { mail, password } = req.query;
+        let usuarios = await usuarioModel.getUsuarios();
 
-        const ok = await model.existeUsuario(mail, password);
-    
-        if (ok > 0){
-            res.json({ ok: true});
-        }else{
-            res.status(404).json({ error: "error"});
+        if (usuarios){
+            for (let i = 0; i < usuarios.length; i++) {
+                const u = usuarios[i];
+                // console.log(u)
+
+                if (u.id !== alerta.usuario){
+                    await notificacionModel.insertNotificacion({ usuario: u.id });
+                }
+            }
         }
+
     } catch (err) {
-        res.status(500).json({ error: err});
+        console.log(err);
+        // Escribir un log
     }
-//}*/
+
+}
+
+/*
+    id: alerta
+    accion: {
+        cancelo - soluciono
+    }
+*/

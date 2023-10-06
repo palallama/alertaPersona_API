@@ -71,36 +71,35 @@ export const getAsistente= async (asisAlerta, asisUsuario) => {
 }
 
 /** 
- ** Crea una nueva alerta
+ ** Crea un asistente
  *
- *i @param asistente: objeto con los datos necesarios de la alerta - especificado mas abajo
+ *i @param asistente: objeto con los datos necesarios - especificado mas abajo
 */
 export const insertAsistente = async (asistente) => {
-     
+
     /** 
     {
-        "idAlerta": "1",                                    //* id de la alerta
-        "usuarioEmisor": "Pepe Perez",                       //* usuario emisor
-        "ubicacionAlerta": "Av. Siempre Falsa 123",               //* ubicación alerta
-        "estadoAlerta": "Activa",                            //* estado alerta
-        "fechaEmision": "12/06/2023 18:34:03",          //* fecha emisión
-        "fechaCierre": "12/06/2023 18:35:15",           //* fecha cierre
+        "alerta": 1,                //* id de la alerta
+        "usuario": 1,               //* id del usuario
+        "observaciones": "obs",     //* alguna observacion
     }
     **/
 
     try{
-                      
-        const query = 'INSERT INTO asistente(asisAlerta, asisUsuario, asisEstado, asisObs) VALUES (?, ?, ?, ?)';
+
+        const query = 'INSERT INTO asistente(asisAlerta, asisUsuario, asisEstado, asisObs) VALUES (?, ?, "I", ?)';
         let params = [
             asistente.alerta,
             asistente.usuario,
             asistente.estado,
-            asistente.observacion,
-            
+            asistente.observacion
         ];
 
         const [rows] = await pool.query(query, params);
-        return 1;
+        return {
+            ...asistente,
+            "estado": "I"
+        };
 
     }catch (err){
         throw new Error(err);
@@ -113,32 +112,19 @@ export const insertAsistente = async (asistente) => {
  *i @param asistente: objeto con los datos necesarios de la alerta - especificado mas abajo
 */
 export const updateAsistente = async (asistente) => {
-     
-    /** 
-    {
-        "idAlerta": "1",                                    //* id de la alerta
-        "usuarioEmisor": "Pepe Perez",                       //* usuario emisor
-        "ubicacionAlerta": "Av. Siempre Falsa 123",               //* ubicación alerta
-        "estadoAlerta": "Activa",                            //* estado alerta
-        "fechaEmision": "12/06/2023 18:34:03",          //* fecha emisión
-        "fechaCierre": "12/06/2023 18:35:15",           //* fecha cierre
-    }
-    **/
-
     try{
 
-        const query = 'UPDATE asistente SET asisEstado = ?, asisObs = ? WHERE asisAlerta = ? and asisUsuario = ?';
+        const query = 'UPDATE asistente SET asisObs = ? WHERE asisAlerta = ? and asisUsuario = ?';
         let params = [
-
-            asistente.estado,
             asistente.observacion,
             asistente.alerta,
-            asistente.usuario,
-            
+            asistente.usuario
         ];
 
         const [rows] = await pool.query(query, params);
-        return 1;
+        return {
+            ...asistente
+        };
 
     }catch (err){
         throw new Error(err);
@@ -156,8 +142,8 @@ export const deleteAsistente = async (alerta, usuario) => {
     try{
         const query = 'DELETE FROM asistente WHERE asisAlerta = ? and asisUsuario = ?';
         let params = [
-           alerta,
-           usuario,
+            alerta,
+            usuario,
         ];
 
         const [rows] = await pool.query(query, params);
