@@ -1,12 +1,14 @@
 import express from 'express';
 import morgan  from "morgan";
 import cors    from 'cors';
+import helmet  from 'helmet';
 
 import routerV1 from './routers/router.v1.js';
 
 const app = express();
 
 // Middlewares
+app.use(helmet());
 app.use(morgan('dev'));
 app.use(cors());
 

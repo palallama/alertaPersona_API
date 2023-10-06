@@ -152,3 +152,25 @@ export const deleteNotificacion = async (notiId) => {
     }
 
 }
+
+/** 
+ ** Marcar Notificacion Leida
+ *
+ *i @param notiId: id del usuario a eliminar
+*/
+export const marcarLeidaNotificacion = async (notiId) => {
+
+    try{
+        const query = 'UPDATE notificacion SET notiEstado = "L" WHERE notiId = ?';
+        let params = [
+            notiId
+        ];
+
+        const [rows] = await pool.query(query, params);
+        return notiId;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}

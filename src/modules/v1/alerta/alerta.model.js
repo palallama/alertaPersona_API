@@ -9,7 +9,7 @@ import { pool } from '../../../db.js';
 export const getAlertas = async () => {
 
     try{
-        const query = 'SELECT * FROM alerta';
+        const query = 'SELECT *, ST_Longitude(aleUbi) AS longitude, ST_Latitude(aleUbi) AS latitude FROM alerta';
         let params = [];
 
         const [rows] = await pool.query(query, params);
@@ -20,12 +20,15 @@ export const getAlertas = async () => {
             const row = rows[i];
 
             response.push({
-                "idAlerta": row.aleId,
-                "usuarioEmisor": row.aleUsuario,
-                "ubicacionAlerta": row.aleUbi,
-                "estadoAlerta": row.aleEstado,
-                "fechaEmision": row.aleFchEmision,
-                "fechaCierre": row.aleFchCierre,
+                "id": row.aleId,
+                "usuario": row.aleUsuario,
+                "ubicacion": {
+                    "latitud": row.latitude,
+                    "longitud": row.longitude
+                },
+                "estado": row.aleEstado,
+                "emision": row.aleFchEmision,
+                "cierre": row.aleFchCierre,
             });
         };
 
@@ -44,27 +47,24 @@ export const getAlertas = async () => {
 export const getAlerta= async (aleId) => {
 
     try{
-        const query = 'SELECT *, ST_Longitude(alertaUbi) AS longitude, ST_Latitude(alertaUbi) AS latitude FROM alerta WHERE aleId = ?';
+        const query = 'SELECT *, ST_Longitude(aleUbi) AS longitude, ST_Latitude(aleUbi) AS latitude FROM alerta WHERE aleId = ?';
         let params = [
             aleId
         ];
 
         const [rows] = await pool.query(query, params);
 
-        let response = null;
-            
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-
-            response = {
-                "idAlerta": row.aleId,
-                "usuarioEmisor": row.aleUsuario,
-                "ubicacionAlerta": row.aleUbi,
-                "estadoAlerta": row.aleEstado,
-                "fechaEmision": row.aleFchEmision,
-                "fechaCierre": row.aleFchCierre,
-            };
-        };
+        let response = {
+            "id": rows[0].aleId,
+            "usuario": rows[0].aleUsuario,
+            "ubicacion": {
+                "latitud": rows[0].latitude,
+                "longitud": rows[0].longitude
+            },
+            "estado": rows[0].aleEstado,
+            "emision": rows[0].aleFchEmision,
+            "cierre": rows[0].aleFchCierre,
+        }
 
         return response;
 
@@ -93,21 +93,19 @@ export const insertAlerta = async (alerta) => {
     **/
 
     try{
-
-        const query = 'INSERT INTO alerta(aleId, alertaUsuario, alertaUbi, alertaEstado, aleFchEmision, aleFchCierre) VALUES (?, ?, ST_GeomFromText(\'POINT(? ?)\', 4326), \'I\', ?, ?, ?)';
+        const query = 'INSERT INTO alerta(aleUsuario, aleUbi, aleEstado, aleFchEmision) VALUES (?, ST_GeomFromText("POINT(? ?)", 4326), "I", NOW() )';
         let params = [
-            alerta.id,
-            alerta.emisor,
-            alerta.ubicacion,
-            alerta.estado,
-            alerta.fechaEmision,
-            alerta.fechaCierre,
+            alerta.usuario,
+            parseFloat(alerta.ubicacion.longitud),
+            parseFloat(alerta.ubicacion.latitud)
         ];
-
         const [rows] = await pool.query(query, params);
-        return 1;
+        const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);
+        
+        return await getAlerta(id[0].id);
 
     }catch (err){
+        // console.log(err);
         throw new Error(err);
     }
 

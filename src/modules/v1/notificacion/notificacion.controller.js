@@ -14,9 +14,9 @@ export const getNotificaciones = async (req, res) => {
 export const getNotificacion = async (req, res) => {
 
     try {
-        const { notiId } = req.params;
+        const { notificacionId } = req.params;
 
-        const noti = await model.getNoti(notiId);
+        const noti = await model.getNotificaciones(notificacionId);
         res.json(noti);
     } catch (err) {
         res.status(500).json({ error: err});
@@ -74,7 +74,7 @@ export const updateNotificacion = async (req, res) => {
 export const deleteNotificacion = async (req, res) => {
 
     try {
-        const ok = await model.deleteNoti(req.params.notiId);
+        const ok = await model.deleteNotificacion(req.params.notificacionId);
     
         if (ok > 0){
             res.json({ ok: true});

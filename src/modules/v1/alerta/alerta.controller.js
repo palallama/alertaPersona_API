@@ -1,11 +1,14 @@
 import * as model from "./alerta.model.js";
 import * as validador from "./alerta.validator.js";
 
+import * as notificacionModel from '../notificacion/notificacion.model.js';
+import * as usuarioModel from '../usuario/usuario.model.js';
+
 export const getAlertas = async (req, res) => {
 
     try {
         const alerta = await model.getAlertas();
-        res.json(alerta);
+        res.status(200).json(alerta);
     } catch (err) {
         res.status(500).json({ error: err});
     }
@@ -14,16 +17,16 @@ export const getAlertas = async (req, res) => {
 export const getAlerta = async (req, res) => {
 
     try {
-        const resultado = validador.validacionParcialAlerta( { "id": req.params.alertaId } );
+        const resultado = validador.validacionParcialAlerta( { "id": parseInt(req.params.alertaId) } );
 
         if (!resultado.success) {
             // 422 Unprocessable Entity
             return res.status(400).json({ error: JSON.parse(resultado.error.message) })
         }
-        const ok = await model.getAlerta(resultado.data.id);
+        const alerta = await model.getAlerta(resultado.data.id);
     
-        if (ok > 0){
-            res.status(201).json({ ok: true });
+        if (alerta){
+            res.status(201).json(alerta);
         }else{
             res.status(404).send('error');
         }
@@ -47,13 +50,16 @@ export const insertAlerta = async (req, res) => {
         const nuevaAlerta = await model.insertAlerta(resultado.data);
     
         if (nuevaAlerta){
+
+            // emitirAlerta(nuevaAlerta);
+
             res.status(201).json(nuevaAlerta);
         }else{
             res.status(404).send('error');
         }
 
     } catch (err) {
-        // console.log(err);
+        console.log(err);
         res.status(500).json(err);
     }
 
@@ -106,3 +112,36 @@ export const deleteAlerta = async (req, res) => {
     }
 
 }
+
+const emitirAlerta = async ( alerta ) => {
+
+// 1. generar las notificaciones para los usuarios menos el emisor
+// 2. enviar las notificaciones a los usuarios
+
+    try {
+        let usuarios = await usuarioModel.getUsuarios();
+
+        if (usuarios){
+            for (let i = 0; i < usuarios.length; i++) {
+                const u = usuarios[i];
+                // console.log(u)
+
+                if (u.id !== alerta.usuario){
+                    await notificacionModel.insertNotificacion({ usuario: u.id });
+                }
+            }
+        }
+
+    } catch (err) {
+        console.log(err);
+        // Escribir un log
+    }
+
+}
+
+/*
+    id: alerta
+    accion: {
+        cancelo - soluciono
+    }
+*/
