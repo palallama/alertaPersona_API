@@ -12,4 +12,10 @@ alertaRouter.patch('/:alertaId', controller.updateAlerta);
 alertaRouter.delete('/:alertaId', controller.deleteAlerta);
 
 
+/*
+alertaRouter.post('/estadoCerrar', ) 
+alertaRouter.post('/estadoCancelar', )
+alertaRouter.post('/estadoSolucionar', )
+*/
+
 export default alertaRouter;

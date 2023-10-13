@@ -10,6 +10,7 @@ notificacionRouter.post('/', controller.insertNotificacion);
 notificacionRouter.patch('/:notificacionId', controller.updateNotificacion);
 notificacionRouter.delete('/:notificacionId', controller.deleteNotificacion);
 
-notificacionRouter.post('/accion', );
+notificacionRouter.get('/leer/:notificacionId', controller.marcarLeidaNotificacion ); 
+
 
 export default notificacionRouter;

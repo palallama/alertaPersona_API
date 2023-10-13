@@ -19,7 +19,7 @@ POST http://localhost:4000/api/v1/alerta/
 Content-Type: application/json
 
 {
-    "usuario": 4,
+    "usuario": 1,
     "ubicacion": {
         "latitud": "-34.59378016523937",
         "longitud": "-58.5908796490356"

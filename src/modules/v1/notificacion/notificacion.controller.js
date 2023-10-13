@@ -85,3 +85,36 @@ export const deleteNotificacion = async (req, res) => {
         res.status(500).json({ error: err});
     }
 }
+    
+
+export const marcarLeidaNotificacion = async (req, res) => {
+    try {
+        const resultado = validador.validacionParcialNotificacion( { "id": req.params.notificacionId } );
+
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const ok = await model.marcarLeidaNotificacion(resultado.data.id);
+    
+        if (ok > 0){
+            res.status(201).json({ ok: true });
+        }else{
+            res.status(404).send('error');
+        }
+
+
+    } catch (err) {
+        // console.log(err);
+        res.status(500).json(err);
+    }
+
+
+    }
+
+
+
+
+
+    
+
