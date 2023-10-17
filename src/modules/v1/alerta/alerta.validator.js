@@ -27,9 +27,10 @@ const alertaEsquema = z.object({
         latitud: z.string().regex(latitud_regex),
         longitud: z.string().regex(longitud_regex)
     }),
-    estado: z.string().length(2).optional(),
+    estado: z.string().max(2).optional(),
     emision: z.string().datetime().optional(),
-    cierre: z.string().datetime().optional()
+    cierre: z.string().datetime().optional(),
+    cerrada: z.boolean().optional()
 });
 
 export const validarAlerta = (input) => {

@@ -139,6 +139,42 @@ const emitirAlerta = async ( alerta ) => {
 
 }
 
+export const cerrarAlerta = async ( req, res ) => {
+
+    try {
+        const resultado = validador.validacionParcialAlerta( req.body );
+
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+
+        const alerta = await model.cerrarAlerta(resultado.data);
+    
+        if (alerta){
+            res.status(201).json(alerta);
+        }else{
+            res.status(404).send('error');
+        }
+
+    } catch (err) {
+        // console.log(err);
+        res.status(500).json(err);
+    }
+}
+
+/*
+
+    TAREA: que pasa si quiero cerrar (solucionada o cancelada) una alerta con asistentes
+ 
+    - avisar a los asistentes
+        * buscar en la tabla "asistente" si la alerta tiene alguno
+        * obtener los usuarios asistentes
+    - insertar notificacion al usuario
+
+*/
+
+
 /*
     id: alerta
     accion: {
