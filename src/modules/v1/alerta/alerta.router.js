@@ -11,6 +11,7 @@ alertaRouter.post('/', controller.insertAlerta);
 alertaRouter.patch('/:alertaId', controller.updateAlerta);
 alertaRouter.delete('/:alertaId', controller.deleteAlerta);
 
+alertaRouter.patch('/:alertaId, :usuarioId', controller.marcarAlertaAsistente)
 
 /*
 alertaRouter.post('/estadoCerrar', ) 

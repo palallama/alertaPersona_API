@@ -11,4 +11,5 @@ asistenteRouter.post('/', controller.insertAsistente);
 asistenteRouter.patch('/:alerta/:usuario', controller.updateAsistente);
 asistenteRouter.delete('/:alerta/:usuario', controller.deleteAsistente);
 
+
 export default asistenteRouter;

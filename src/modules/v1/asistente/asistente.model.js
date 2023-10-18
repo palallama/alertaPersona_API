@@ -87,19 +87,16 @@ export const insertAsistente = async (asistente) => {
 
     try{
 
-        const query = 'INSERT INTO asistente(asisAlerta, asisUsuario, asisEstado, asisObs) VALUES (?, ?, "I", ?)';
+        const query = 'INSERT INTO asistente(asisAlerta, asisUsuario, asisEstado, asisObs) VALUES (?, ?, ?, ?)';
         let params = [
             asistente.alerta,
             asistente.usuario,
-            asistente.estado,
+            asistente.estado, //asistio, /cancelo, rechazo/--> observacion
             asistente.observacion
         ];
 
         const [rows] = await pool.query(query, params);
-        return {
-            ...asistente,
-            "estado": "I"
-        };
+        return asistente;
 
     }catch (err){
         throw new Error(err);

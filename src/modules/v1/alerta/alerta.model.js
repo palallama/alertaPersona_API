@@ -196,3 +196,24 @@ export const existeUsuario = async (mail, password) => {
 
 
 }*/
+
+export const cerrarAlerta = async (alertaId, estado) => {
+    /*update si esta cerrada.. cerrada solucionada o cancelada?
+*/
+try{
+
+    const query = 'UPDATE alerta SET  aleEstado = ?, aleCerrada = ?, aleFchCierre =? WHERE aleId = ?';
+    let params = [
+        alerta.estado,
+        alerta
+       
+    ];
+
+    const [rows] = await pool.query(query, params);
+    return 1;
+
+}catch (err){
+    throw new Error(err);
+}
+
+}

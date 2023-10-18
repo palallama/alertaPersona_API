@@ -145,3 +145,8 @@ const emitirAlerta = async ( alerta ) => {
         cancelo - soluciono
     }
 */
+
+const marcarAlertaAsistente = async ( alerta, usuario ) => {
+
+    //CONXAESUMADRE.COM
+}
