@@ -114,7 +114,29 @@ export const marcarLeidaNotificacion = async (req, res) => {
 
 
 
+    export const updateNotiMotivo = async (req, res) => {
 
+        try {
+            const resultado = validador.validacionParcialNotificacion(req.body);
+    
+            if (!resultado.success) {
+                // 422 Unprocessable Entity
+                return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+            }
+            const notificacion = await model.updateNotiMotivo(resultado.data);
+        
+            if (notificacion != null){
+                res.status(201).json(notificacion);
+            }else{
+                res.status(404).send('error');
+            }
+    
+        } catch (err) {
+            // console.log(err);
+            res.status(500).json(err);
+        }
+    
+    }
 
     
 
