@@ -174,3 +174,32 @@ export const marcarLeidaNotificacion = async (notiId) => {
     }
 
 }
+
+
+export const updateNotiMotivo = async (notificacion) => {
+
+    /** 
+    {
+       notiMotivo =  (S/C)Solucion/Cancelacion
+    }
+    **/
+
+    try{
+
+        const query = 'UPDATE notificacion SET notiEstado = 0, notiMotivo = ? WHERE notiId = ? AND notiUsuario = ? AND notiUsuario != 0';
+        let params = [
+            notificacion.estado,
+            notificacion.motivo,
+            notificacion.id,
+            notificacion.usuario,
+        ];
+
+        const [rows] = await pool.query(query, params);
+        return 1;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+

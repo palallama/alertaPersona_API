@@ -111,9 +111,10 @@ export const insertAsistente = async (asistente) => {
 export const updateAsistente = async (asistente) => {
     try{
 
-        const query = 'UPDATE asistente SET asisObs = ? WHERE asisAlerta = ? and asisUsuario = ?';
+        const query = 'UPDATE asistente SET asisObs = ?, asisEstado = ? WHERE asisAlerta = ? and asisUsuario = ?';
         let params = [
             asistente.observacion,
+            asistente.estado,
             asistente.alerta,
             asistente.usuario
         ];
