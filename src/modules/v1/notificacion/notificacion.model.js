@@ -78,11 +78,11 @@ export const insertNotificacion = async (notificacion) => {
     **/
 
     try{
-
+        //!!! VER
         const query = 'INSERT INTO notificacion(notiUsuario, notiEstado) VALUES (?, "I")';
         let params = [
             notificacion.usuario,
-            notificacion.estado
+            // notificacion.estado
         ];
         const [rows] = await pool.query(query, params);
         const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);

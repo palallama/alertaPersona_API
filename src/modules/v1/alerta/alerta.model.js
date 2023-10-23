@@ -98,8 +98,8 @@ export const insertAlerta = async (alerta) => {
         const query = 'INSERT INTO alerta(aleUsuario, aleUbi, aleFchEmision) VALUES (?, ST_GeomFromText("POINT(? ?)", 4326), NOW() )';
         let params = [
             alerta.usuario,
-            parseFloat(alerta.ubicacion.longitud),
-            parseFloat(alerta.ubicacion.latitud)
+            parseFloat(alerta.ubicacion.latitud),
+            parseFloat(alerta.ubicacion.longitud)
         ];
         const [rows] = await pool.query(query, params);
         const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);

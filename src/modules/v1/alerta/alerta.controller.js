@@ -3,6 +3,7 @@ import * as validador from "./alerta.validator.js";
 
 import * as notificacionModel from '../notificacion/notificacion.model.js';
 import * as usuarioModel from '../usuario/usuario.model.js';
+import * as asistenteModel from '../asistente/asistente.model.js';
 
 export const getAlertas = async (req, res) => {
 
@@ -75,7 +76,7 @@ export const updateAlerta = async (req, res) => {
             return res.status(400).json({ error: JSON.parse(resultado.error.message) })
         }
         const alerta = await model.updateAlerta(resultado.data);
-    
+
         if (alerta){
             res.status(201).json(alerta);
         }else{
@@ -149,16 +150,22 @@ export const cerrarAlerta = async ( req, res ) => {
             return res.status(400).json({ error: JSON.parse(resultado.error.message) })
         }
 
+        // id
+        // estado - accion (cancelar o solucionarla)
+
         const alerta = await model.cerrarAlerta(resultado.data);
+        // const alerta = true;
     
         if (alerta){
+            notificarALosAsistentes(alerta.id);
+
             res.status(201).json(alerta);
         }else{
             res.status(404).send('error');
         }
 
     } catch (err) {
-        // console.log(err);
+        console.log(err);
         res.status(500).json(err);
     }
 }
@@ -166,7 +173,7 @@ export const cerrarAlerta = async ( req, res ) => {
 /*
 
     TAREA: que pasa si quiero cerrar (solucionada o cancelada) una alerta con asistentes
- 
+
     - avisar a los asistentes
         * buscar en la tabla "asistente" si la alerta tiene alguno
         * obtener los usuarios asistentes
@@ -174,6 +181,29 @@ export const cerrarAlerta = async ( req, res ) => {
 
 */
 
+async function notificarALosAsistentes(alertaId){
+    
+            // tiene asistentes?
+            // array de asistentes - siempre y cuando, tenga asistentes
+            const asistentes = await asistenteModel.getAsistentesAlerta(alertaId);
+            console.log(asistentes);
+            if (asistentes){
+                // notifica, crear un registro en la tabla notificacion
+
+                asistentes.forEach( async (asistente) => {
+                    let noti = {
+                        "usuario": asistente.usuario
+                    }
+                    let notiAux = await notificacionModel.insertNotificacion(noti);
+                    if (notiAux){
+                        // Emitir la notificacion (enviar a los celulares)
+                    }else{
+                        console.error("Erorr al crear la notificacion");
+                    }
+                } )
+
+            }
+}
 
 /*
     id: alerta

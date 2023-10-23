@@ -152,28 +152,34 @@ export const deleteAsistente = async (alerta, usuario) => {
 
 }
 
-/** 
- ** Corrobora que existe el usuario para el inicio de sesion
- *
- *i @param mail: mail del usuario
- *i @param password: contraseña del usuario
-
-export const existeUsuario = async (mail, password) => {
+export const getAsistentesAlerta = async (alerta) => {
 
     try {
+        console.log(alerta);
 
-        let query = 'SELECT usuId FROM usuario WHERE (usuMail = ? AND usuPass = ?) AND usuActivo = true';
-        let params = [
-            mail,
-            password
-        ];
+        const query = 'SELECT * FROM asistente WHERE asisAlerta = ?';
+        const params = [
+            alerta
+        ]
         const [rows] = await pool.query(query, params);
-        
-        return 1;
+
+        let response = [];
+            
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            response.push({
+                "alerta": row.asisAlerta,
+                "usuario": row.asisUsuario,
+                "estado": row.asisEstado,
+                "observacion": row.asisObs,
+            });
+        };
+
+        return response;
         
     } catch (err) {
         throw new Error(err);
     }
 
-
-}*/
+}
