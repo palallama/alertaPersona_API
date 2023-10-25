@@ -11,7 +11,7 @@ notificacionRouter.patch('/:notificacionId', controller.updateNotificacion);
 notificacionRouter.delete('/:notificacionId', controller.deleteNotificacion);
 
 notificacionRouter.get('/leer/:notificacionId', controller.marcarLeidaNotificacion ); 
-notificacionRouter.patch('/:notificacionId', controller.updateNotiMotivo);
+
 
 
 
