@@ -29,6 +29,7 @@ Content-Type: application/json
 ###
 
 # test iniciar sesion
+
 GET http://localhost:4000/api/v1/usuario/iniciarSesion?mail=mail@mail.com&password=123
 
 ###

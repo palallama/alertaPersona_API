@@ -1,6 +1,8 @@
+import { preprocess } from "zod";
 import * as model from "./usuario.model.js";
 import * as validador from "./usuario.validator.js";
 import jwt from "jsonwebtoken";
+import { TOKEN_SECRET } from "../../../config.js";
 
 export const getUsuarios = async (req, res) => {
 
@@ -107,14 +109,14 @@ export const iniciarSesion = async (req, res) => {
             // 422 Unprocessable Entity
             return res.status(400).json({ error: JSON.parse(resultado.error.message) })
         }
+        console.log(resultado.data)
         const usuId = await model.existeUsuario(resultado.data.mail, resultado.data.password);
     
         if (usuId > 0){
-
             const token = jwt.sign({
-                mail: login.mail,
+                mail: resultado.data.mail,
                 id: usuId
-            }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
+            }, TOKEN_SECRET, { expiresIn: '1h' })
 
             res.setHeader('auth-token', token).status(200).json({
                 error: null,
@@ -125,8 +127,10 @@ export const iniciarSesion = async (req, res) => {
         }
 
     } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
+        res.status(500).json({
+            error: err,
+            data: null
+        });
     }
 
 }

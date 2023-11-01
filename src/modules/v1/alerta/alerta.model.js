@@ -36,6 +36,7 @@ export const getAlertas = async () => {
         return response;
 
     }catch (err){
+        console.log(err);
         throw new Error(err);
     }
 

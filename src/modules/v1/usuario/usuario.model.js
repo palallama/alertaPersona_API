@@ -209,13 +209,11 @@ export const existeUsuario = async (mail, password) => {
         const [rows] = await pool.query(query, params);
 
         if (rows[0]){
-            // console.log(rows[0].usuId);
             return rows[0].usuId;
         }
         return 0;
 
     } catch (err) {
-        // console.log(err);
         throw new Error(err);
     }
 
