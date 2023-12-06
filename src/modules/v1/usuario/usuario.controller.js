@@ -1,4 +1,3 @@
-import { preprocess } from "zod";
 import * as model from "./usuario.model.js";
 import * as validador from "./usuario.validator.js";
 import jwt from "jsonwebtoken";
@@ -31,7 +30,7 @@ export const insertUsuario = async (req, res) => {
     try {
 
         const resultado = validador.validarUsuario(req.body);
-        // console.log(resultado);
+        console.log(resultado);
 
         if (!resultado.success) {
             // 422 Unprocessable Entity
