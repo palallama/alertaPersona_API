@@ -29,12 +29,14 @@ export const getAlertas = async () => {
                 "estado": row.aleEstado,
                 "emision": row.aleFchEmision,
                 "cierre": row.aleFchCierre,
+                "cerrada": row.aleCerrada
             });
         };
 
         return response;
 
     }catch (err){
+        console.log(err);
         throw new Error(err);
     }
 
@@ -64,6 +66,7 @@ export const getAlerta= async (aleId) => {
             "estado": rows[0].aleEstado,
             "emision": rows[0].aleFchEmision,
             "cierre": rows[0].aleFchCierre,
+            "cerrada": rows[0].aleCerrada
         }
 
         return response;
@@ -93,11 +96,11 @@ export const insertAlerta = async (alerta) => {
     **/
 
     try{
-        const query = 'INSERT INTO alerta(aleUsuario, aleUbi, aleEstado, aleFchEmision) VALUES (?, ST_GeomFromText("POINT(? ?)", 4326), "I", NOW() )';
+        const query = 'INSERT INTO alerta(aleUsuario, aleUbi, aleFchEmision) VALUES (?, ST_GeomFromText("POINT(? ?)", 4326), NOW() )';
         let params = [
             alerta.usuario,
-            parseFloat(alerta.ubicacion.longitud),
-            parseFloat(alerta.ubicacion.latitud)
+            parseFloat(alerta.ubicacion.latitud),
+            parseFloat(alerta.ubicacion.longitud)
         ];
         const [rows] = await pool.query(query, params);
         const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);
@@ -196,3 +199,33 @@ export const existeUsuario = async (mail, password) => {
 
 
 }*/
+
+
+/*
+    alerta = {
+        estado,
+        id
+    }
+*/
+export const cerrarAlerta = async (alerta) => {
+    /*update si esta cerrada.. cerrada solucionada o cancelada?*/
+
+    try{
+
+        const query = 'UPDATE alerta SET  aleEstado = ?, aleCerrada = 1, aleFchCierre = NOW() WHERE aleId = ? AND aleEstado = "E" AND aleCerrada = 0';
+        let params = [
+            alerta.estado,
+            alerta.id
+        ];
+
+        const [rows] = await pool.query(query, params);
+        return 1;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+
+

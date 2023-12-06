@@ -14,6 +14,7 @@ import z from 'zod';
 **/
 
 const usuarioEsquema = z.object({
+    id: z.number().positive().optional(),
     nombre: z.string().max(45),
     apellido: z.string().max(60),
     dni: z.string().length(8),

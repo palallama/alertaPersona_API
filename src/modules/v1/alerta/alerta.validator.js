@@ -4,7 +4,7 @@ import z from 'zod';
 // const longitud_regex = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/;
 
 const latitud_regex =  /^[-]?[0-9]{1,10}\.[0-9]{6,14}?$/; 
-const longitud_regex = /^[-]?[0-9]{1,10}\.[0-9]{6,14}?$/;
+const longitud_regex = /^[-]?[0-9]{1,10}\.[0-9]{6,16}?$/;
 
 /** 
 {
@@ -27,9 +27,10 @@ const alertaEsquema = z.object({
         latitud: z.string().regex(latitud_regex),
         longitud: z.string().regex(longitud_regex)
     }),
-    estado: z.string().length(2).optional(),
+    estado: z.string().max(2).optional(),
     emision: z.string().datetime().optional(),
-    cierre: z.string().datetime().optional()
+    cierre: z.string().datetime().optional(),
+    cerrada: z.boolean().optional()
 });
 
 export const validarAlerta = (input) => {

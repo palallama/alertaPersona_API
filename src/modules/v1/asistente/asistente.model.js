@@ -87,19 +87,16 @@ export const insertAsistente = async (asistente) => {
 
     try{
 
-        const query = 'INSERT INTO asistente(asisAlerta, asisUsuario, asisEstado, asisObs) VALUES (?, ?, "I", ?)';
+        const query = 'INSERT INTO asistente(asisAlerta, asisUsuario, asisEstado, asisObs) VALUES (?, ?, ?, ?)';
         let params = [
             asistente.alerta,
             asistente.usuario,
-            asistente.estado,
+            asistente.estado, //asistio, /cancelo, rechazo/--> observacion
             asistente.observacion
         ];
 
         const [rows] = await pool.query(query, params);
-        return {
-            ...asistente,
-            "estado": "I"
-        };
+        return asistente;
 
     }catch (err){
         throw new Error(err);
@@ -114,9 +111,10 @@ export const insertAsistente = async (asistente) => {
 export const updateAsistente = async (asistente) => {
     try{
 
-        const query = 'UPDATE asistente SET asisObs = ? WHERE asisAlerta = ? and asisUsuario = ?';
+        const query = 'UPDATE asistente SET asisObs = ?, asisEstado = ? WHERE asisAlerta = ? and asisUsuario = ?';
         let params = [
             asistente.observacion,
+            asistente.estado,
             asistente.alerta,
             asistente.usuario
         ];
@@ -155,28 +153,34 @@ export const deleteAsistente = async (alerta, usuario) => {
 
 }
 
-/** 
- ** Corrobora que existe el usuario para el inicio de sesion
- *
- *i @param mail: mail del usuario
- *i @param password: contraseña del usuario
-
-export const existeUsuario = async (mail, password) => {
+export const getAsistentesAlerta = async (alerta) => {
 
     try {
+        console.log(alerta);
 
-        let query = 'SELECT usuId FROM usuario WHERE (usuMail = ? AND usuPass = ?) AND usuActivo = true';
-        let params = [
-            mail,
-            password
-        ];
+        const query = 'SELECT * FROM asistente WHERE asisAlerta = ?';
+        const params = [
+            alerta
+        ]
         const [rows] = await pool.query(query, params);
-        
-        return 1;
+
+        let response = [];
+            
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            response.push({
+                "alerta": row.asisAlerta,
+                "usuario": row.asisUsuario,
+                "estado": row.asisEstado,
+                "observacion": row.asisObs,
+            });
+        };
+
+        return response;
         
     } catch (err) {
         throw new Error(err);
     }
 
-
-}*/
+}

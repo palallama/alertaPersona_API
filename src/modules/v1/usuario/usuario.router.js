@@ -6,6 +6,7 @@ const usuarioRouter = express.Router();
 
 
 usuarioRouter.get('/iniciarSesion', controller.iniciarSesion);
+usuarioRouter.patch('/:usuarioId/cambiarContrasena', controller.cambiarContrasena); 
 
 usuarioRouter.get('/', controller.getUsuarios);
 usuarioRouter.get('/:usuarioId', controller.getUsuario);
