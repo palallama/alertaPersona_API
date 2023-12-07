@@ -127,10 +127,38 @@ export const iniciarSesion = async (req, res) => {
         }
 
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             error: err,
             data: null
         });
+    }
+
+}
+
+
+export const cambiarContrasena = async (req, res) => {
+
+    try {
+
+        const resultado = validador.validacionParcialUsuario(req.body);
+        console.log(resultado);
+
+        if (!resultado.success) {
+            // 422 Unprocessable Entity
+            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
+        }
+        const usuario = await model.cambiarContrasena(resultado.data);
+    
+        if (usuario != null){
+            res.status(201).json(usuario);
+        }else{
+            res.status(404).send('error');
+        }
+
+    } catch (err) {
+        // console.log(err);
+        res.status(500).json(err);
     }
 
 }

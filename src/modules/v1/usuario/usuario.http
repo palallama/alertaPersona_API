@@ -10,6 +10,17 @@ GET http://localhost:4000/api/v1/usuario/4
 # auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoibWFpbEBtYWlsLmNvbSIsImlkIjo0LCJpYXQiOjE2OTY0NjE2MjMsImV4cCI6MTY5NjQ2NTIyM30.QVQUXvc_-YtY3nXXiMG1ZDL6zdXQvHmQzD0VPA65y8o
 
 ###
+#cambiar contrasena
+
+PATCH http://localhost:4000/api/v1/usuario/1/cambiarContrasena
+Content-Type: application/json
+
+{
+    "id": 1,
+    "password": "lalala" 
+}
+
+###
 
 # Insert usuario
 
@@ -26,7 +37,7 @@ Content-Type: application/json
     "password": "123"
 }
 
-###
+### 
 
 # test iniciar sesion
 

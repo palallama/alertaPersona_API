@@ -219,3 +219,30 @@ export const existeUsuario = async (mail, password) => {
 
 
 }
+
+
+export const cambiarContrasena = async (usuario) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "password": 123,                //* contraseña del usuario
+    }
+    **/
+
+    try{
+        console.log(usuario);
+        const query = 'UPDATE usuario SET usuPass = ? WHERE usuId = ?';
+        let params = [
+            usuario.password,
+            usuario.id
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        return usuario;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
