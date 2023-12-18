@@ -93,7 +93,7 @@ export const deleteUsuario = async (req, res) => {
 }
 
 export const iniciarSesion = async (req, res) => {
-
+    console.log(TOKEN_SECRET);
     try {
 
         const login = {
