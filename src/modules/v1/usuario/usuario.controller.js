@@ -162,3 +162,22 @@ export const cambiarContrasena = async (req, res) => {
     }
 
 }
+
+
+export const setTokenNotificacionUsuario = async (req, res) => {
+
+    try {
+        const usuarioBody = req.body;
+        const usuario = await model.setTokenNotificacion(usuarioBody);
+    
+        if (usuario != null){
+            res.status(201).json(usuario);
+        }else{
+            res.status(404).send('error');
+        }
+    } catch (err) {
+        // console.log(err);
+        res.status(500).json(err);
+    }
+
+}

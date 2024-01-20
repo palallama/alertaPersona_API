@@ -3,6 +3,8 @@ import * as controller from './notificacion.controller.js';
 
 const notificacionRouter = express.Router();
 
+notificacionRouter.get('/enviarNotificacion', controller.enviarNotificacion);
+
 notificacionRouter.get('/', controller.getNotificaciones);
 notificacionRouter.get('/:notificacionId', controller.getNotificacion);
 

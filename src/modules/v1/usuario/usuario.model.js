@@ -246,3 +246,45 @@ export const cambiarContrasena = async (usuario) => {
     }
 
 }
+
+
+
+export const setTokenNotificacion = async (usuario) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "token": "token",               //* nuevo token
+    }
+    **/
+
+    try{
+
+        console.log(usuario);
+        const query = 'UPDATE usuario SET usuNotiToken = ? WHERE usuId = ?';
+        let params = [
+            usuario.token,
+            usuario.id
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        return usuario;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+export const getTokenNotificacion = async (usuarioId) => {
+    try{
+        const query = 'SELECT usuNotiToken AS token FROM usuario WHERE usuId = ?';
+        let params = [
+            usuarioId
+        ];
+        const [rows] = await pool.query(query, params);
+        return rows[0].token;
+    }catch (err){
+        throw new Error(err);
+    }
+}

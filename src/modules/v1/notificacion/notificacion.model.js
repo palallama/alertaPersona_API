@@ -1,5 +1,7 @@
 
 import { pool } from '../../../db.js';
+import { emitirNotificacion } from '../../../helpers/fcm.js';
+import { getTokenNotificacion } from '../usuario/usuario.model.js';
 
 
 /** 
@@ -67,15 +69,8 @@ export const getNotificacion = async (notiId) => {
  *
  *i @param notificacion: objeto con los datos necesarios del usuario - especificado mas abajo
 */
-export const insertNotificacion = async (notificacion) => {
+export const insertNotificacion = async (notificacion, notificar=false) => {
 
-    /** 
-    {
-        "id": row.notiId,
-        "usuario": row.notiUsuario,
-        "estado": row.notiEstado
-    }
-    **/
 
     try{
         //!!! VER
@@ -86,6 +81,13 @@ export const insertNotificacion = async (notificacion) => {
         ];
         const [rows] = await pool.query(query, params);
         const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);
+
+        if (notificar) {
+            const token = await getTokenNotificacion(notificacion.usuario);
+            if (token) {
+                emitirNotificacion(token, notificacion.data);
+            }
+        }
 
         return {
             "id": id[0].id,
@@ -202,4 +204,3 @@ export const updateNotiMotivo = async (notificacion) => {
     }
 
 }
-

@@ -38,7 +38,6 @@ export const insertAsistente = async (req, res) => {
 
     try {
         const resultado = validador.validarAsistente(req.body);
-
         if (!resultado.success) {
             // 422 Unprocessable Entity
             return res.status(400).json({ error: JSON.parse(resultado.error.message) })
@@ -46,7 +45,7 @@ export const insertAsistente = async (req, res) => {
         const nuevoAsistente = await model.insertAsistente(resultado.data);
     
         if (nuevoAsistente != null){
-            res.status(201).json(nuevoAsistente);
+            res.status(200).json(nuevoAsistente);
         }else{
             res.status(404).send('error');
         }

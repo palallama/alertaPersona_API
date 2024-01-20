@@ -11,6 +11,8 @@ usuarioRouter.patch('/:usuarioId/cambiarContrasena', controller.cambiarContrasen
 usuarioRouter.get('/', controller.getUsuarios);
 usuarioRouter.get('/:usuarioId', controller.getUsuario);
 
+usuarioRouter.post('/setNotificacionToken', controller.setTokenNotificacionUsuario);
+
 usuarioRouter.post('/', controller.insertUsuario);
 usuarioRouter.patch('/:usuarioId', controller.updateUsuario);
 usuarioRouter.delete('/:usuarioId', controller.deleteUsuario);
