@@ -2,6 +2,7 @@
 
 # get usuarios
 GET http://localhost:4000/api/v1/usuario/
+# auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoibWFpbEBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3MDI3MTAzOTcsImV4cCI6MTcwMjcxMzk5N30.rU4_Q7rXXe0fNP7ZU-dghuperAERY_7cJGNkSERwRjQ
 
 ###
 

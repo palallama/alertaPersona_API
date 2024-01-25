@@ -246,3 +246,42 @@ export const cambiarContrasena = async (usuario) => {
     }
 
 }
+
+
+
+export const getHistorial = async (usuarioId) => {
+
+    try{
+        const query = 'SELECT * FROM usuario INNER JOIN alerta ON usuario.usuId = alerta.aleUsuario INNER JOIN asistente ON  WHERE usuId = ?';
+        let params = [
+            usuarioId
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        let response = null;
+            
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            response = {
+                // "id": row.usuId,
+                "nombre": row.usuNombre,
+                "apellido": row.usuApellido,
+                // "dni": row.usuDni,
+                "telefono": row.usuTelefono,
+                // "nroTramite": row.usuNroTramite,
+                "mail": row.usuMail,
+                // "validado": row.usuValidado,
+                // "activo": row.usuActivo,
+               // "alertas emitidas:" alertas.getAlerta(usuarioId),
+            };
+        };
+
+        return response;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
