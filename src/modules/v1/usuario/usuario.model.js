@@ -252,35 +252,36 @@ export const cambiarContrasena = async (usuario) => {
 export const getHistorialAlertasEmitidas = async (aleUsuario) => {
 
     try{
-        const query = 'SELECT * FROM alerta WHERE aleUsuario = ?';
+        const query = 'SELECT *, ST_Longitude(aleUbi) AS longitude, ST_Latitude(aleUbi) AS latitude  FROM alerta WHERE aleUsuario = ?';
         let params = [
             aleUsuario
         ];
 
         const [rows] = await pool.query(query, params);
 
-        let response = null;
+        let response = [];
             
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-                console.log(row);
-        //  response = {
-                // "id": row.usuId,
-                //"nombre": row.usuNombre,
-                //"apellido": row.usuApellido,
-                // "dni": row.usuDni,
-                //"telefono": row.usuTelefono,
-                // "nroTramite": row.usuNroTramite,
-                //"mail": row.usuMail,
-                // "validado": row.usuValidado,
-                // "activo": row.usuActivo,
-            //   "alertas emitidas": alertas.getAlertas(aleUsuario),
-        //  };
+                // console.log(row);
+            response.push({
+                "id": row.aleId,
+                "usuario": row.aleUsuario,
+                "ubicacion": {
+                    "latitud": row.latitude,
+                    "longitud": row.longitude
+                },
+                "estado": row.aleEstado,
+                "fechaEmision": row.aleFchEmision,
+                "fechaCierre": row.aleFchCierre,
+                "cerrada": row.aleCerrada
+            });
         };
 
         return response;
 
     }catch (err){
+        console.log(err);
         throw new Error(err);
     }
 
@@ -290,30 +291,36 @@ export const getHistorialAlertasEmitidas = async (aleUsuario) => {
 export const getHistorialAlertasAcudidas = async (usuarioId) => {
 
     try{
-        const query = 'SELECT * FROM usuario INNER JOIN alerta ON alerta.asisUsuario = usuario.usuId WHERE usuId = ?';
+
+            // ir a alerta -> ver sus asistentes -> ver si el usuario esta entre ellos
+
+        const query = 'SELECT *, ST_Longitude(aleUbi) AS longitude, ST_Latitude(aleUbi) AS latitude \
+                       FROM alerta AS al \
+                       INNER JOIN asistente AS a ON al.aleId = a.asisAlerta  \
+                       WHERE a.asisUsuario = ? AND \
+                       a.asisEstado = "A"';
         let params = [
             usuarioId
         ];
 
         const [rows] = await pool.query(query, params);
 
-        let response = null;
+        let response = [];
             
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-
-            response = {
-                // "id": row.usuId,
-                "nombre": row.usuNombre,
-                "apellido": row.usuApellido,
-                // "dni": row.usuDni,
-                "telefono": row.usuTelefono,
-                // "nroTramite": row.usuNroTramite,
-                "mail": row.usuMail,
-                // "validado": row.usuValidado,
-                // "activo": row.usuActivo,
-                "alertas acudidas": alertas.getAlertas(usuarioId),
-            };
+            response.push({
+                "id": row.aleId,
+                "usuario": row.aleUsuario,
+                "ubicacion": {
+                    "latitud": row.latitude,
+                    "longitud": row.longitude
+                },
+                "estado": row.aleEstado,
+                "fechaEmision": row.aleFchEmision,
+                "fechaCierre": row.aleFchCierre,
+                "cerrada": row.aleCerrada
+            });
         };
 
         return response;
