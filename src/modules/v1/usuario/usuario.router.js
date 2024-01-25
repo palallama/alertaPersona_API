@@ -7,9 +7,11 @@ const usuarioRouter = express.Router();
 
 usuarioRouter.get('/iniciarSesion', controller.iniciarSesion);
 usuarioRouter.patch('/:usuarioId/cambiarContrasena', controller.cambiarContrasena); 
+usuarioRouter.get('/:usuarioId/enviarEmail')
 
 usuarioRouter.get('/', controller.getUsuarios);
 usuarioRouter.get('/:usuarioId', controller.getUsuario);
+usuarioRouter.get('/:usuarioId/historial', controller.getHistorial)
 
 usuarioRouter.post('/setNotificacionToken', controller.setTokenNotificacionUsuario);
 
