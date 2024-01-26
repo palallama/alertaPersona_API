@@ -249,10 +249,48 @@ export const cambiarContrasena = async (usuario) => {
 
 
 
-export const getHistorial = async (usuarioId) => {
+export const getHistorialAlertasEmitidas = async (aleUsuario) => {
 
     try{
-        const query = 'SELECT * FROM usuario INNER JOIN alerta ON usuario.usuId = alerta.aleUsuario INNER JOIN asistente ON  WHERE usuId = ?';
+        const query = 'SELECT * FROM alerta WHERE aleUsuario = ?';
+        let params = [
+            aleUsuario
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        let response = null;
+            
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+                console.log(row);
+        //  response = {
+                // "id": row.usuId,
+                //"nombre": row.usuNombre,
+                //"apellido": row.usuApellido,
+                // "dni": row.usuDni,
+                //"telefono": row.usuTelefono,
+                // "nroTramite": row.usuNroTramite,
+                //"mail": row.usuMail,
+                // "validado": row.usuValidado,
+                // "activo": row.usuActivo,
+            //   "alertas emitidas": alertas.getAlertas(aleUsuario),
+        //  };
+        };
+
+        return response;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+
+export const getHistorialAlertasAcudidas = async (usuarioId) => {
+
+    try{
+        const query = 'SELECT * FROM usuario INNER JOIN alerta ON alerta.asisUsuario = usuario.usuId WHERE usuId = ?';
         let params = [
             usuarioId
         ];
@@ -274,11 +312,66 @@ export const getHistorial = async (usuarioId) => {
                 "mail": row.usuMail,
                 // "validado": row.usuValidado,
                 // "activo": row.usuActivo,
-               // "alertas emitidas:" alertas.getAlerta(usuarioId),
+                "alertas acudidas": alertas.getAlertas(usuarioId),
             };
         };
 
         return response;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+
+export const agregarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "password": 123,                //* contraseña del usuario
+    }
+    **/
+
+    try{
+        // console.log(usuario);
+        const query = 'INSERT INTO usuario_preferencias(usuPrefUsuario, usuPrefCodigo) VALUES ( ?, ?)';
+        let params = [
+            usuPrefUsuario,
+            usuPrefCodigo 
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        return usuPrefCodigo;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+
+
+export const borrarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "password": 123,                //* contraseña del usuario
+    }
+    **/
+
+    try{
+        // console.log(usuario);
+        const query = 'DELETE FROM usuario_preferencias WHERE usuPrefUsuario = ? AND usuPrefCodigo = ?';
+        let params = [
+            usuPrefUsuario,
+            usuPrefCodigo 
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        return usuPrefCodigo;
 
     }catch (err){
         throw new Error(err);
