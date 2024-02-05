@@ -11,7 +11,7 @@ usuarioRouter.get('/:usuarioId/enviarEmail')
 
 usuarioRouter.get('/', controller.getUsuarios);
 usuarioRouter.get('/:usuarioId', controller.getUsuario);
-usuarioRouter.get('/:usuarioId/historial', controller.getHistorial)
+usuarioRouter.get('/:usuarioId/historial', controller.verHistorial)
 
 usuarioRouter.post('/setNotificacionToken', controller.setTokenNotificacionUsuario);
 

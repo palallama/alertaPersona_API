@@ -162,7 +162,6 @@ export const cambiarContrasena = async (req, res) => {
 
 }
 
-
 export const setTokenNotificacionUsuario = async (req, res) => {
 
     try {
@@ -176,6 +175,29 @@ export const setTokenNotificacionUsuario = async (req, res) => {
         }
     } catch (err) {
         // console.log(err);
+        res.status(500).json(err);
+    }
+
+export const verHistorial = async (req, res) => {
+
+    try {
+
+
+        // recibir el parametro del usaurio
+        // const usuarioId = req.params.usuarioId;
+        const { usuarioId } = req.params;
+
+        // hacer la busqueda de historiales
+        const alertasEmitidas = await model.getHistorialAlertasEmitidas(usuarioId);
+        const alertasAcudidas = await model.getHistorialAlertasAcudidas(usuarioId);
+
+        res.status(201).json({
+            emitidas: alertasEmitidas,
+            acudidas: alertasAcudidas
+        });
+    
+    } catch (err) {
+        console.log(err)
         res.status(500).json(err);
     }
 
