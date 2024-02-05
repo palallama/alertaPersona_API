@@ -249,6 +249,13 @@ export const cambiarContrasena = async (usuario) => {
 
 
 
+<<<<<<< HEAD
+export const setTokenNotificacion = async (usuario) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "token": "token",               //* nuevo token
+=======
 export const getHistorialAlertasEmitidas = async (aleUsuario) => {
 
     try{
@@ -337,20 +344,34 @@ export const agregarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
     {
         "id": 1                         //* id de usuario
         "password": 123,                //* contraseña del usuario
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
     }
     **/
 
     try{
+<<<<<<< HEAD
+
+        console.log(usuario);
+        const query = 'UPDATE usuario SET usuNotiToken = ? WHERE usuId = ?';
+        let params = [
+            usuario.token,
+            usuario.id
+=======
         // console.log(usuario);
         const query = 'INSERT INTO usuario_preferencias(usuPrefUsuario, usuPrefCodigo) VALUES ( ?, ?)';
         let params = [
             usuPrefUsuario,
             usuPrefCodigo 
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
         ];
 
         const [rows] = await pool.query(query, params);
 
+<<<<<<< HEAD
+        return usuario;
+=======
         return usuPrefCodigo;
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
 
     }catch (err){
         throw new Error(err);
@@ -358,6 +379,20 @@ export const agregarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
 
 }
 
+<<<<<<< HEAD
+export const getTokenNotificacion = async (usuarioId) => {
+    try{
+        const query = 'SELECT usuNotiToken AS token FROM usuario WHERE usuId = ?';
+        let params = [
+            usuarioId
+        ];
+        const [rows] = await pool.query(query, params);
+        return rows[0].token;
+    }catch (err){
+        throw new Error(err);
+    }
+}
+=======
 
 
 export const borrarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
@@ -385,3 +420,4 @@ export const borrarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
     }
 
 }
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925

@@ -13,6 +13,8 @@ usuarioRouter.get('/', controller.getUsuarios);
 usuarioRouter.get('/:usuarioId', controller.getUsuario);
 usuarioRouter.get('/:usuarioId/historial', controller.verHistorial)
 
+usuarioRouter.post('/setNotificacionToken', controller.setTokenNotificacionUsuario);
+
 usuarioRouter.post('/', controller.insertUsuario);
 usuarioRouter.patch('/:usuarioId', controller.updateUsuario);
 usuarioRouter.delete('/:usuarioId', controller.deleteUsuario);

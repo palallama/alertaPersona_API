@@ -43,6 +43,7 @@ export const insertAlerta = async (req, res) => {
 
     try {
         const resultado = validador.validarAlerta( req.body );
+        console.log(resultado.error)
 
         if (!resultado.success) {
             // 422 Unprocessable Entity
@@ -52,7 +53,7 @@ export const insertAlerta = async (req, res) => {
     
         if (nuevaAlerta){
 
-            // emitirAlerta(nuevaAlerta);
+            emitirAlerta(nuevaAlerta);
 
             res.status(201).json(nuevaAlerta);
         }else{
@@ -125,10 +126,17 @@ const emitirAlerta = async ( alerta ) => {
         if (usuarios){
             for (let i = 0; i < usuarios.length; i++) {
                 const u = usuarios[i];
-                // console.log(u)
+                
+                const notificacion = {
+                    usuario: u.id,
+                    data: {
+                        alerta: alerta.id.toString(),
+                        motivo: 'A'
+                    }
+                }
 
                 if (u.id !== alerta.usuario){
-                    await notificacionModel.insertNotificacion({ usuario: u.id });
+                    await notificacionModel.insertNotificacion(notificacion, true);
                 }
             }
         }
@@ -157,7 +165,7 @@ export const cerrarAlerta = async ( req, res ) => {
         // const alerta = true;
     
         if (alerta){
-            notificarALosAsistentes(alerta.id);
+            notificarALosAsistentes(alerta);
 
             res.status(201).json(alerta);
         }else{
@@ -181,20 +189,24 @@ export const cerrarAlerta = async ( req, res ) => {
 
 */
 
-async function notificarALosAsistentes(alertaId){
+async function notificarALosAsistentes(alerta){
     
             // tiene asistentes?
             // array de asistentes - siempre y cuando, tenga asistentes
-            const asistentes = await asistenteModel.getAsistentesAlerta(alertaId);
+            const asistentes = await asistenteModel.getAsistentesAlerta(alerta.id);
             console.log(asistentes);
             if (asistentes){
                 // notifica, crear un registro en la tabla notificacion
 
                 asistentes.forEach( async (asistente) => {
-                    let noti = {
-                        "usuario": asistente.usuario
+                    const notificacion = {
+                        usuario: asistente.usuario,
+                        data: {
+                            alerta: alerta.id.toString(),
+                            motivo: alerta.estado
+                        }
                     }
-                    let notiAux = await notificacionModel.insertNotificacion(noti);
+                    let notiAux = await notificacionModel.insertNotificacion(notificacion,true);
                     if (notiAux){
                         // Emitir la notificacion (enviar a los celulares)
                     }else{
