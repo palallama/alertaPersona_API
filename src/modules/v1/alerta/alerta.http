@@ -8,7 +8,7 @@ GET http://localhost:4000/api/v1/alerta
 
 # Get alerta
 
-GET http://localhost:4000/api/v1/alerta/4
+GET http://localhost:4000/api/v1/alerta/36
 
 
 ###
@@ -21,8 +21,8 @@ Content-Type: application/json
 {
     "usuario": 1,
     "ubicacion": {
-        "latitud": "-34.60026581256884",
-        "longitud": "-58.593906116244945"
+        "latitud": "-39.95153282559446",
+        "longitud": "-71.07049904317019"
     }
 }
 
@@ -34,5 +34,5 @@ Content-Type: application/json
 
 {
     "estado": "C",
-    "id": 4
+    "id": 36
 }

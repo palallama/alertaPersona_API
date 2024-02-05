@@ -10,7 +10,8 @@ import z from 'zod';
 **/
 
 const asistenteEsquema = z.object({
-    alerta: z.number().positive(),
+    // alerta: z.number().positive(),
+    alerta: z.string(),
     usuario: z.number().positive(),
     observaciones: z.string().max(200),
     estado: z.string().length(1).optional()
