@@ -177,6 +177,7 @@ export const setTokenNotificacionUsuario = async (req, res) => {
         // console.log(err);
         res.status(500).json(err);
     }
+}
 
 export const verHistorial = async (req, res) => {
 
