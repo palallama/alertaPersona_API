@@ -1,16 +1,26 @@
 import express from 'express';
-import * as controller from './usuario.controller.js';
+import * as controller from './alerta.controller.js';
 
-const usuarioRouter = express.Router();
+const alertaRouter = express.Router();
+
+alertaRouter.post('/cierre', controller.cerrarAlerta);
+
+alertaRouter.get('/', controller.getAlertas);
+alertaRouter.get('/:alertaId', controller.getAlerta);
+
+alertaRouter.post('/', controller.insertAlerta);
+alertaRouter.patch('/:alertaId', controller.updateAlerta);
+alertaRouter.delete('/:alertaId', controller.deleteAlerta);
 
 
-usuarioRouter.get('/iniciarSesion', controller.iniciarSesion);
 
-usuarioRouter.get('/', controller.getUsuarios);
-usuarioRouter.get('/:usuarioId', controller.getUsuario);
 
-usuarioRouter.post('/', controller.insertUsuario);
-usuarioRouter.put('/', controller.updateUsuario);
-usuarioRouter.delete('/:usuarioId', controller.deleteUsuario);
 
-export default usuarioRouter;
+/*
+// alertaRouter.patch('/:alertaId, :usuarioId', controller.marcarAlertaAsistente)
+alertaRouter.post('/estadoCerrar', ) 
+alertaRouter.post('/estadoCancelar', )
+alertaRouter.post('/estadoSolucionar', )
+*/
+
+export default alertaRouter;

@@ -1,0 +1,43 @@
+# INSERT DE ASISTENTE QUE ASISTE
+
+POST http://localhost:4000/api/v1/asistente/
+Content-Type: application/json
+
+{
+    "alerta": 1,
+    "usuario": 1,
+    "estado": "A",
+    "observaciones": "" 
+}
+
+
+
+###
+# INSERT DE ASISTENTE QUE RECHAZA
+
+POST http://localhost:4000/api/v1/asistente/
+Content-Type: application/json
+
+{
+"alerta": 1,
+"usuario": 1,
+"estado": "R",
+"observaciones": "" 
+
+}
+
+
+
+###
+# INSERT DE ASISTENTE QUE CANCELA
+
+POST http://localhost:4000/api/v1/asistente/
+Content-Type: application/json
+
+{
+"alerta": 1,
+"usuario": 1,
+"estado": "C",
+"observaciones": "" 
+
+}

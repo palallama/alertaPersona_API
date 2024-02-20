@@ -1,0 +1,54 @@
+
+
+# get usuarios
+<<<<<<< HEAD
+GET http://192.168.1.31:4000/api/v1/usuario/
+=======
+GET http://localhost:4000/api/v1/usuario/
+# auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoibWFpbEBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3MDI3MTAzOTcsImV4cCI6MTcwMjcxMzk5N30.rU4_Q7rXXe0fNP7ZU-dghuperAERY_7cJGNkSERwRjQ
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
+
+###
+
+# get usuario
+GET http://localhost:4000/api/v1/usuario/4
+# auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoibWFpbEBtYWlsLmNvbSIsImlkIjo0LCJpYXQiOjE2OTY0NjE2MjMsImV4cCI6MTY5NjQ2NTIyM30.QVQUXvc_-YtY3nXXiMG1ZDL6zdXQvHmQzD0VPA65y8o
+
+###
+#cambiar contrasena
+
+PATCH http://localhost:4000/api/v1/usuario/1/cambiarContrasena
+Content-Type: application/json
+
+{
+    "id": 1,
+    "password": "lalala" 
+}
+
+###
+
+# Insert usuario
+
+POST http://localhost:4000/api/v1/usuario/
+Content-Type: application/json
+
+{
+    "nombre": "julian2",
+    "apellido": "torossian",
+    "dni": "99999999",
+    "telefono": "2944909090",
+    "nroTramite": "12345678901",
+    "mail": "mail@mail.com",
+    "password": "123"
+}
+
+### 
+
+# test iniciar sesion
+
+GET http://localhost:4000/api/v1/usuario/iniciarSesion?mail=mail@mail.com&password=lalala
+
+###
+
+# ver historial
+GET http://localhost:4000/api/v1/usuario/4/historial

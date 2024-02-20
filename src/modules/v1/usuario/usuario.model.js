@@ -86,7 +86,6 @@ export const getUsuario = async (usuarioId) => {
  *i @param usuario: objeto con los datos necesarios del usuario - especificado mas abajo
 */
 export const insertUsuario = async (usuario) => {
-     
     /** 
     {
         "nombre": "julian",             //* nombre del usuario
@@ -111,9 +110,15 @@ export const insertUsuario = async (usuario) => {
             usuario.mail,
             usuario.password
         ];
-
         const [rows] = await pool.query(query, params);
-        return 1;
+        const [id] = await pool.query("SELECT LAST_INSERT_ID() AS id", []);
+        
+        let usuarioN = {
+            "id": id[0].id,
+            ...usuario
+        }
+
+        return usuarioN;
 
     }catch (err){
         throw new Error(err);
@@ -127,7 +132,6 @@ export const insertUsuario = async (usuario) => {
  *i @param usuario: objeto con los datos necesarios del usuario - especificado mas abajo
 */
 export const updateUsuario = async (usuario) => {
-     
     /** 
     {
         "id": 1                         //* id de usuario
@@ -156,7 +160,8 @@ export const updateUsuario = async (usuario) => {
         ];
 
         const [rows] = await pool.query(query, params);
-        return 1;
+
+        return usuario;
 
     }catch (err){
         throw new Error(err);
@@ -202,12 +207,217 @@ export const existeUsuario = async (mail, password) => {
             password
         ];
         const [rows] = await pool.query(query, params);
-        
-        return 1;
-        
+
+        if (rows[0]){
+            return rows[0].usuId;
+        }
+        return 0;
+
     } catch (err) {
         throw new Error(err);
     }
 
 
 }
+
+
+export const cambiarContrasena = async (usuario) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "password": 123,                //* contraseña del usuario
+    }
+    **/
+
+    try{
+        console.log(usuario);
+        const query = 'UPDATE usuario SET usuPass = ? WHERE usuId = ?';
+        let params = [
+            usuario.password,
+            usuario.id
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        return usuario;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+
+
+<<<<<<< HEAD
+export const setTokenNotificacion = async (usuario) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "token": "token",               //* nuevo token
+=======
+export const getHistorialAlertasEmitidas = async (aleUsuario) => {
+
+    try{
+        const query = 'SELECT *, ST_Longitude(aleUbi) AS longitude, ST_Latitude(aleUbi) AS latitude  FROM alerta WHERE aleUsuario = ?';
+        let params = [
+            aleUsuario
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        let response = [];
+            
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+                // console.log(row);
+            response.push({
+                "id": row.aleId,
+                "usuario": row.aleUsuario,
+                "ubicacion": {
+                    "latitud": row.latitude,
+                    "longitud": row.longitude
+                },
+                "estado": row.aleEstado,
+                "fechaEmision": row.aleFchEmision,
+                "fechaCierre": row.aleFchCierre,
+                "cerrada": row.aleCerrada
+            });
+        };
+
+        return response;
+
+    }catch (err){
+        console.log(err);
+        throw new Error(err);
+    }
+
+}
+
+
+export const getHistorialAlertasAcudidas = async (usuarioId) => {
+
+    try{
+
+            // ir a alerta -> ver sus asistentes -> ver si el usuario esta entre ellos
+
+        const query = 'SELECT *, ST_Longitude(aleUbi) AS longitude, ST_Latitude(aleUbi) AS latitude \
+                       FROM alerta AS al \
+                       INNER JOIN asistente AS a ON al.aleId = a.asisAlerta  \
+                       WHERE a.asisUsuario = ? AND \
+                       a.asisEstado = "A"';
+        let params = [
+            usuarioId
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        let response = [];
+            
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            response.push({
+                "id": row.aleId,
+                "usuario": row.aleUsuario,
+                "ubicacion": {
+                    "latitud": row.latitude,
+                    "longitud": row.longitude
+                },
+                "estado": row.aleEstado,
+                "fechaEmision": row.aleFchEmision,
+                "fechaCierre": row.aleFchCierre,
+                "cerrada": row.aleCerrada
+            });
+        };
+
+        return response;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+
+export const agregarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "password": 123,                //* contraseña del usuario
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
+    }
+    **/
+
+    try{
+<<<<<<< HEAD
+
+        console.log(usuario);
+        const query = 'UPDATE usuario SET usuNotiToken = ? WHERE usuId = ?';
+        let params = [
+            usuario.token,
+            usuario.id
+=======
+        // console.log(usuario);
+        const query = 'INSERT INTO usuario_preferencias(usuPrefUsuario, usuPrefCodigo) VALUES ( ?, ?)';
+        let params = [
+            usuPrefUsuario,
+            usuPrefCodigo 
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+<<<<<<< HEAD
+        return usuario;
+=======
+        return usuPrefCodigo;
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+
+<<<<<<< HEAD
+export const getTokenNotificacion = async (usuarioId) => {
+    try{
+        const query = 'SELECT usuNotiToken AS token FROM usuario WHERE usuId = ?';
+        let params = [
+            usuarioId
+        ];
+        const [rows] = await pool.query(query, params);
+        return rows[0].token;
+    }catch (err){
+        throw new Error(err);
+    }
+}
+=======
+
+
+export const borrarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
+    /** 
+    {
+        "id": 1                         //* id de usuario
+        "password": 123,                //* contraseña del usuario
+    }
+    **/
+
+    try{
+        // console.log(usuario);
+        const query = 'DELETE FROM usuario_preferencias WHERE usuPrefUsuario = ? AND usuPrefCodigo = ?';
+        let params = [
+            usuPrefUsuario,
+            usuPrefCodigo 
+        ];
+
+        const [rows] = await pool.query(query, params);
+
+        return usuPrefCodigo;
+
+    }catch (err){
+        throw new Error(err);
+    }
+
+}
+>>>>>>> bb2da1284765c89313d64b669bfd2b6bd7b3c925
