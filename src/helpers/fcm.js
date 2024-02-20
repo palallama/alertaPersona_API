@@ -1,7 +1,7 @@
 import https from "https";
 import { google } from "googleapis";
 
-import key from '../../cert/alertapersona-firebase-adminsdk-ulmcu-bc3a5f970c.json' assert { type: 'json' };
+import key from './alertapersona-firebase-adminsdk-ulmcu-bc3a5f970c.json' assert { type: 'json' };
 
 const PROJECT_ID = "alertapersona";
 const HOST = "fcm.googleapis.com";
