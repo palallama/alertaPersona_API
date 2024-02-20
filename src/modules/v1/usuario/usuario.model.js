@@ -279,6 +279,7 @@ export const getHistorialAlertasAcudidas = async (usuarioId) => {
         fechaCierre: row.aleFchCierre,
         cerrada: row.aleCerrada,
       });
+
     }
 
     return response;
@@ -350,3 +351,4 @@ export const borrarPreferencias = async (usuPrefUsuario, usuPrefCodigo) => {
     throw new Error(err);
   }
 };
+
