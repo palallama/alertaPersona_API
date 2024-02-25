@@ -16,11 +16,12 @@ initializeApp({
 
 
 const app = express();
+/*
 const options = {
     key: fs.readFileSync('./cert/localhost+2-key.pem'),
     cert: fs.readFileSync('./cert/localhost+2.pem')
 }
-
+*/
 const ACCEPTED_ORIGINS =[
     'http://localhost:8100',
     'https://localhost'
@@ -54,7 +55,7 @@ app.use('/api/v1', routerV1);
 
 // app.options = options;
 
-const server = https.createServer(options, app);
+//const server = https.createServer(options, app);
 
 // export default server;
 export default app;
