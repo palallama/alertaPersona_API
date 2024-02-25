@@ -310,7 +310,7 @@ export const setTokenNotificacion = async (usuario) => {
         "token": "token",               //* nuevo token
     */
   try {
-    const query = "INSERT INTO usuNotiToken VALUES (?,?)";
+    const query = "UPDATE usuario SET usuNotiToken = ? WHERE usuId = ?";
     let params = [usuario.id, usuario.token];
     const [rows] = await pool.query(query, params);
     return rows[0];
