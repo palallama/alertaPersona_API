@@ -26,7 +26,7 @@ Content-Type: application/json
 
 # Insert usuario
 
-POST http://localhost:4000/api/v1/usuario/
+POST https://alertapersonaapi-testeo.up.railway.app/api/v1/usuario
 Content-Type: application/json
 
 {
