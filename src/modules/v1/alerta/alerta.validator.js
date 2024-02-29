@@ -20,7 +20,7 @@ const longitud_regex = /^[-]?[0-9]{1,10}\.[0-9]{6,16}?$/;
 }
 **/
 
-const alertaEsquema = z.object({
+const esquema = z.object({
     id: z.number().positive().optional(),
     usuario: z.number().positive(),
     ubicacion: z.object({
@@ -33,10 +33,12 @@ const alertaEsquema = z.object({
     cerrada: z.boolean().optional()
 });
 
-export const validarAlerta = (input) => {
-    return alertaEsquema.safeParse(input);
+export const validarId = (input) => {
+    return z.object({ alertaId: z.number().positive() }).safeParse(input);
 }
-
-export const validacionParcialAlerta = (input) => {
-    return alertaEsquema.partial().safeParse(input);
+export const validar = (input) => {
+    return esquema.safeParse(input);
+}
+export const validacionParcial = (input) => {
+    return esquema.partial().safeParse(input);
 }

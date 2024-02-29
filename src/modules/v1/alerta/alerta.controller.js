@@ -1,118 +1,134 @@
 import * as model from "./alerta.model.js";
-import * as validador from "./alerta.validator.js";
 
 import * as notificacionModel from '../notificacion/notificacion.model.js';
 import * as usuarioModel from '../usuario/usuario.model.js';
 import * as asistenteModel from '../asistente/asistente.model.js';
 
-export const getAlertas = async (req, res) => {
-
+export const getAlertas = async (req, res, next) => {
     try {
-        const alerta = await model.getAlertas();
-        res.status(200).json(alerta);
+        const alertas = await model.getAlertas();
+        res.status(200).json({
+            success: true,
+            data: alertas
+        });
     } catch (err) {
-        res.status(500).json({ error: err});
+        next(err);
     }
 }
 
-export const getAlerta = async (req, res) => {
-
+export const getAlerta = async (req, res, next) => {
     try {
-        const resultado = validador.validacionParcialAlerta( { "id": parseInt(req.params.alertaId) } );
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const alerta = await model.getAlerta(resultado.data.id);
-    
-        if (alerta){
-            res.status(201).json(alerta);
-        }else{
-            res.status(404).send('error');
-        }
-
-    } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
-    }
-    
-}
-
-export const insertAlerta = async (req, res) => {
-
-    try {
-        const resultado = validador.validarAlerta( req.body );
-        console.log(resultado.error)
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const nuevaAlerta = await model.insertAlerta(resultado.data);
-    
-        if (nuevaAlerta){
-
-            emitirAlerta(nuevaAlerta);
-
-            res.status(201).json(nuevaAlerta);
-        }else{
-            res.status(404).send('error');
-        }
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json(err);
-    }
-
-}
-
-export const updateAlerta = async (req, res) => {
-
-    try {
-        const resultado = validador.validacionParcialAlerta( req.body );
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const alerta = await model.updateAlerta(resultado.data);
+        const { alertaId } = req.params
+        const alerta = await model.getAlerta(alertaId);
 
         if (alerta){
-            res.status(201).json(alerta);
+            res.status(200).json({
+                success: true,
+                data: alerta
+            });
         }else{
-            res.status(404).send('error');
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
         }
-
     } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
+        next(err);
     }
-
 }
 
-export const deleteAlerta = async (req, res) => {
-
+export const insertAlerta = async (req, res, next) => {
     try {
-        const resultado = validador.validacionParcialAlerta( { "id": req.params.alertaId } );
+        const { body } = req;
+        const alerta = await model.insertAlerta(body);
 
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const ok = await model.deleteAlerta(resultado.data.id);
-    
-        if (ok > 0){
-            res.status(201).json({ ok: true });
+        if (alerta){
+            res.status(201).json({
+                success: true,
+                data: alerta
+            });
         }else{
-            res.status(404).send('error');
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
         }
-
     } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
+        next(err);
     }
+}
 
+export const updateAlerta = async (req, res, next) => {
+    try {
+        const { body } = req;
+        const alerta = await model.updateAlerta(body);
+
+        if (alerta){
+            res.status(200).json({
+                success: true,
+                data: alerta
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const deleteAlerta = async (req, res, next) => {
+    try {
+        const { alertaId } = req.params
+        const ok = await model.deleteAlerta(alertaId);
+    
+        if (ok){
+            res.status(200).json({
+                success: true,
+                data: { alertaId: alertaId }
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const cerrarAlerta = async ( req, res ) => {
+    try {
+        const { body } = req;
+        const alerta = await model.cerrarAlerta(body);
+    
+        if (alerta){
+            res.status(200).json({
+                success: true,
+                data: alerta
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+    } catch (err) {
+        next(err);
+    }
 }
 
 const emitirAlerta = async ( alerta ) => {
@@ -146,85 +162,4 @@ const emitirAlerta = async ( alerta ) => {
         // Escribir un log
     }
 
-}
-
-export const cerrarAlerta = async ( req, res ) => {
-
-    try {
-        const resultado = validador.validacionParcialAlerta( req.body );
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-
-        // id
-        // estado - accion (cancelar o solucionarla)
-
-        const alerta = await model.cerrarAlerta(resultado.data);
-        // const alerta = true;
-    
-        if (alerta){
-            notificarALosAsistentes(alerta);
-
-            res.status(201).json(alerta);
-        }else{
-            res.status(404).send('error');
-        }
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json(err);
-    }
-}
-
-/*
-
-    TAREA: que pasa si quiero cerrar (solucionada o cancelada) una alerta con asistentes
-
-    - avisar a los asistentes
-        * buscar en la tabla "asistente" si la alerta tiene alguno
-        * obtener los usuarios asistentes
-    - insertar notificacion al usuario
-
-*/
-
-async function notificarALosAsistentes(alerta){
-    
-            // tiene asistentes?
-            // array de asistentes - siempre y cuando, tenga asistentes
-            const asistentes = await asistenteModel.getAsistentesAlerta(alerta.id);
-            console.log(asistentes);
-            if (asistentes){
-                // notifica, crear un registro en la tabla notificacion
-
-                asistentes.forEach( async (asistente) => {
-                    const notificacion = {
-                        usuario: asistente.usuario,
-                        data: {
-                            alerta: alerta.id.toString(),
-                            motivo: alerta.estado
-                        }
-                    }
-                    let notiAux = await notificacionModel.insertNotificacion(notificacion,true);
-                    if (notiAux){
-                        // Emitir la notificacion (enviar a los celulares)
-                    }else{
-                        console.error("Erorr al crear la notificacion");
-                    }
-                } )
-
-            }
-}
-
-/*
-    id: alerta
-    accion: {
-        cancelo - soluciono
-    }
-*/
-
-const marcarAlertaAsistente = async ( alerta, usuario ) => {
-
-    //CONXAESUMADRE.COM
 }

@@ -53,6 +53,15 @@ app.use(express.json());
 // Rutas
 app.use('/api/v1', routerV1);
 
+// notFound
+app.use(notFoundMiddleware)
+
+// Error middleware
+app.use(logErrors);
+app.use(wrapErrors);
+app.use(errorHandler);
+
+
 // app.options = options;
 
 //const server = https.createServer(options, app);
