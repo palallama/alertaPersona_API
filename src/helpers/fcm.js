@@ -95,9 +95,5 @@ export function emitirNotificacion(para, data){
       'data': data
     }
   }
-
-  // console.log(notificacion);
-
   sendFcmMessage(notificacion)
-
 }

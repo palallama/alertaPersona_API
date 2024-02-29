@@ -1,106 +1,110 @@
 import * as model from "./asistente.model.js";
-import * as validador from "./asistente.validator.js";
 
-export const getAsistentes = async (req, res) => {
-
+export const getAsistentes = async (req, res, next) => {
     try {
-        const asistente = await model.getAsistentes();
-        res.json(asistente);
+        const asistentes = await model.getAsistentes();
+        res.status(200).json({
+            success: true,
+            data: asistentes
+        });
     } catch (err) {
-        res.status(500).json({ error: err});
+        next(err);
     }
 }
 
-export const getAsistente = async (req, res) => {
+export const getAsistente = async (req, res, next) => {
 
     try {
-        const resultado = validador.validacionParcialAsistente( { "alerta": req.params.alerta, "usuario": req.params.usuario } );
+        const { alerta, usuario } = req.params;
+        const asistente = await model.getAsistente(alerta, usuario);
 
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const ok = await model.getAsistente(resultado.data.alerta, resultado.data.usuario);
-    
-        if (ok > 0){
-            res.status(201).json({ ok: true });
+        if (asistente){
+            res.status(200).json({
+                success: true,
+                data: asistente
+            });
         }else{
-            res.status(404).send('error');
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
         }
-
     } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
+        next(err);
     }
 }
 
-export const insertAsistente = async (req, res) => {
+export const insertAsistente = async (req, res, next) => {
 
     try {
-        const resultado = validador.validarAsistente(req.body);
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const nuevoAsistente = await model.insertAsistente(resultado.data);
-    
-        if (nuevoAsistente != null){
-            res.status(200).json(nuevoAsistente);
+        const { body } = req;
+        const asistente = await model.insertAsistente(body);
+
+        if (asistente){
+            res.status(201).json({
+                success: true,
+                data: asistente
+            });
         }else{
-            res.status(404).send('error');
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
         }
 
     } catch (err) {
-        console.log(err);
-        res.status(500).json(err);
+        next(err);
     }
-
 }
 
-export const updateAsistente = async (req, res) => {
+export const updateAsistente = async (req, res, next) => {
 
     try {
-        const resultado = validador.validacionParcialAsistente(req.body);
+        const { body } = req;
+        const asistente = await model.updateAsistente(body);
 
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const asistente = await model.updateAsistente(resultado.data);
-    
-        if (asistente != null){
-            res.status(201).json(asistente);
+        if (asistente){
+            res.status(200).json({
+                success: true,
+                data: asistente
+            });
         }else{
-            res.status(404).send('error');
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
         }
 
     } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
+        next(err);
     }
-
 }
 
-export const deleteAsistente = async (req, res) => {
-
+export const deleteAsistente = async (req, res, next) => {
     try {
-        const resultado = validador.validacionParcialAsistente( { "alerta": req.params.alerta, "usuario": req.params.usuario } );
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const ok = await model.deleteAsistente(resultado.data.alerta, resultado.data.usuario);
+        const { alerta, usuario } = req.params;
+        const ok = await model.deleteAsistente(alerta, usuario);
     
-        if (ok > 0){
-            res.status(201).json({ ok: true });
+        if (ok){
+            res.status(200).json({
+                success: true,
+                data: { alerta: alerta, usuario: usuario }
+            });
         }else{
-            res.status(404).send('error');
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
         }
-
     } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
+        next(err);
     }
-
 }
