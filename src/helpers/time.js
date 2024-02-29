@@ -1,0 +1,3 @@
+
+export const ONE_MINUTE_IN_SECONDS = 60
+export const FIVE_MINUTE_IN_SECONDS = 300
