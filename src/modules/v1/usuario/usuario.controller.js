@@ -1,3 +1,4 @@
+import { createToken } from "../../../helpers/jwt.js";
 import * as model from "./usuario.model.js";
 
 export const getUsuarios = async (req, res, next) => {
@@ -121,7 +122,7 @@ export const iniciarSesion = async (req, res, next) => {
         const usuarioId = await model.existeUsuario(mail, password);
     
         if (usuarioId){
-            res.setHeader('auth-token', { mail: mail, usuarioId: usuarioId });
+            res.setHeader('auth-token', createToken({ mail: mail, usuarioId: usuarioId }));
             res.status(200).json({
                 success: true,
                 data: { usuarioId: usuarioId }
