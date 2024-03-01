@@ -10,8 +10,9 @@ import { validarId, validar, validacionParcial } from './usuario.validator.js';
 const usuarioRouter = express.Router();
 
 
-usuarioRouter.get(
+usuarioRouter.post(
     '/iniciarSesion',
+    validator({ body: validacionParcial }),
     controller.iniciarSesion
 );
 usuarioRouter.patch(
