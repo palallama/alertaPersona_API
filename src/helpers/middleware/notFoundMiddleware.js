@@ -1,6 +1,6 @@
-import { notFound } from "@hapi/boom";
+// import { notFound } from "@hapi/boom";
 
-export const notFoundMiddleware = (req, res) => {
-    const { statusCode, payload } = notFound();
-    res.status(statusCode).json(payload);
-}
+// export const notFoundMiddleware = (req, res) => {
+//     const { statusCode, payload } = notFound();
+//     res.status(statusCode).json(payload);
+// }

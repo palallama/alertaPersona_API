@@ -9,6 +9,7 @@ import { initializeApp, applicationDefault } from 'firebase-admin/app';
 import https from 'https';
 
 import routerV1 from './routers/router.v1.js';
+import { errorHandler, logErrors, wrapErrors } from './helpers/middleware/errorMiddleware.js';
 
 initializeApp({
     credential: applicationDefault()
@@ -54,7 +55,7 @@ app.use(express.json());
 app.use('/api/v1', routerV1);
 
 // notFound
-app.use(notFoundMiddleware)
+// app.use(notFoundMiddleware)
 
 // Error middleware
 app.use(logErrors);

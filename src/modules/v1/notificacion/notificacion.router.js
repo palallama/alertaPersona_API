@@ -9,11 +9,6 @@ import { validarId, validar, validacionParcial } from './notificacion.validator.
 const notificacionRouter = express.Router();
 
 notificacionRouter.get(
-    '/enviarNotificacion',
-    controller.enviarNotificacion
-);
-
-notificacionRouter.get(
     '/',
     cache(ONE_MINUTE_IN_SECONDS),
     controller.getNotificaciones
