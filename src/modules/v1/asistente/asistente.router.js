@@ -4,6 +4,7 @@ import * as controller from './asistente.controller.js';
 import { createValidationMiddleware as validator} from '../../../helpers/middleware/createValidationMiddleware.js';
 import { createCacheMiddleware as cache} from '../../../helpers/middleware/cacheMiddleware.js';
 import { ONE_MINUTE_IN_SECONDS } from '../../../helpers/time.js';
+
 import { validarId, validar, validacionParcial } from './asistente.validator.js';
 
 const asistenteRouter = express.Router();
