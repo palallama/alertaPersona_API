@@ -1,6 +1,4 @@
 import z from 'zod';
-
-
 /** 
     {
     "nombre": "julian",             //* nombre del usuario
@@ -13,8 +11,7 @@ import z from 'zod';
 }
 **/
 
-const usuarioEsquema = z.object({
-    id: z.number().positive().optional(),
+const esquema = z.object({
     nombre: z.string().max(45),
     apellido: z.string().max(60),
     dni: z.string().length(8),
@@ -22,12 +19,16 @@ const usuarioEsquema = z.object({
     nroTramite: z.string().length(11),
     mail: z.string().email().max(60),
     password: z.string(),
+    token: z.string(),
 });
 
-export const validarUsuario = (input) => {
-    return usuarioEsquema.safeParse(input);
+export const validarId = (input) => {
+    return z.object({ usuarioId: z.number().positive() }).safeParse(input);
+}
+export const validar = (input) => {
+    return esquema.safeParse(input);
+}
+export const validacionParcial = (input) => {
+    return esquema.partial().safeParse(input);
 }
 
-export const validacionParcialUsuario = (input) => {
-    return usuarioEsquema.partial().safeParse(input);
-}

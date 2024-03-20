@@ -1,205 +1,209 @@
+import { createToken } from "../../../helpers/jwt.js";
 import * as model from "./usuario.model.js";
-import * as validador from "./usuario.validator.js";
-import jwt from "jsonwebtoken";
-import { TOKEN_SECRET } from "../../../config.js";
 
-export const getUsuarios = async (req, res) => {
-
+export const getUsuarios = async (req, res, next) => {
     try {
         const usuarios = await model.getUsuarios();
-        res.json(usuarios);
-    } catch (err) {
-        res.status(500).json({ error: err});
-    }
-}
-
-export const getUsuario = async (req, res) => {
-
-    try {
-        const { usuarioId } = req.params;
-
-        const usuario = await model.getUsuario(usuarioId);
-        res.json(usuario);
-    } catch (err) {
-        res.status(500).json({ error: err});
-    }
-}
-
-export const insertUsuario = async (req, res) => {
-
-    try {
-
-        const resultado = validador.validarUsuario(req.body);
-        console.log(resultado);
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const nuevoUsuario = await model.insertUsuario(resultado.data);
-    
-        if (nuevoUsuario != null){
-            res.status(201).json(nuevoUsuario);
-        }else{
-            res.status(404).send('error');
-        }
-
-    } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
-    }
-
-}
-
-export const updateUsuario = async (req, res) => {
-
-    try {
-
-        const resultado = validador.validacionParcialUsuario(req.body);
-        // console.log(resultado);
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const usuario = await model.updateUsuario(resultado.data);
-    
-        if (usuario != null){
-            res.status(201).json(usuario);
-        }else{
-            res.status(404).send('error');
-        }
-
-    } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
-    }
-
-}
-
-export const deleteUsuario = async (req, res) => {
-
-    try {
-        const ok = await model.deleteUsuario(req.params.usuarioId);
-    
-        if (ok > 0){
-            res.json({ ok: true});
-        }else{
-            res.status(404).json({ error: "error"});
-        }
-    } catch (err) {
-        res.status(500).json({ error: err});
-    }
-}
-
-export const iniciarSesion = async (req, res) => {
-    console.log(TOKEN_SECRET);
-    try {
-
-        const login = {
-            "mail": req.query.mail,
-            "password": req.query.password
-        }
-
-        const resultado = validador.validacionParcialUsuario(login);
-        // console.log(resultado);
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        console.log(resultado.data)
-        const usuId = await model.existeUsuario(resultado.data.mail, resultado.data.password);
-    
-        if (usuId > 0){
-            const token = jwt.sign({
-                mail: resultado.data.mail,
-                id: usuId
-            }, TOKEN_SECRET, { expiresIn: '1h' })
-
-            res.setHeader('auth-token', token).status(200).json({
-                error: null,
-                data: {token}
+        if (usuarios){
+            res.status(200).json({
+                success: true,
+                data: usuarios
             });
         }else{
-            res.status(404).send('error');
-        }
-
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            error: err,
-            data: null
-        });
-    }
-
-}
-
-
-export const cambiarContrasena = async (req, res) => {
-
-    try {
-
-        const resultado = validador.validacionParcialUsuario(req.body);
-        console.log(resultado);
-
-        if (!resultado.success) {
-            // 422 Unprocessable Entity
-            return res.status(400).json({ error: JSON.parse(resultado.error.message) })
-        }
-        const usuario = await model.cambiarContrasena(resultado.data);
-    
-        if (usuario != null){
-            res.status(201).json(usuario);
-        }else{
-            res.status(404).send('error');
-        }
-
-    } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
-    }
-
-}
-
-export const setTokenNotificacionUsuario = async (req, res) => {
-
-    try {
-        const usuarioBody = req.body;
-        const usuario = await model.setTokenNotificacion(usuarioBody);
-    
-        if (usuario != null){
-            res.status(201).json(usuario);
-        }else{
-            res.status(404).send('error');
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
         }
     } catch (err) {
-        // console.log(err);
-        res.status(500).json(err);
+        next(err);
     }
 }
 
-export const verHistorial = async (req, res) => {
-
+export const getUsuario = async (req, res, next) => {
     try {
-
-
-        // recibir el parametro del usaurio
-        // const usuarioId = req.params.usuarioId;
         const { usuarioId } = req.params;
+        const usuario = await model.getUsuario(usuarioId);
 
+        if (usuario){
+            res.status(200).json({
+                success: true,
+                data: usuario
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const insertUsuario = async (req, res, next) => {
+    try {
+        const { body } = req;
+        const usuario = await model.insertUsuario(body);
+
+        if (usuario){
+            res.status(201).json({
+                success: true,
+                data: usuario
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const updateUsuario = async (req, res, next) => {
+    try {
+        const { body } = req;
+        const usuario = await model.updateUsuario(body);
+
+        if (usuario){
+            res.status(200).json({
+                success: true,
+                data: usuario
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const deleteUsuario = async (req, res, next) => {
+    try {
+        const { usuarioId } = req.params;
+        const ok = await model.deleteUsuario(usuarioId);
+    
+        if (ok){
+            res.status(200).json({
+                success: true,
+                data: { usuarioId: usuarioId }
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const iniciarSesion = async (req, res, next) => {
+    try {
+        const { mail, password } = req.body;
+        const usuarioId = await model.existeUsuario(mail, password);
+    
+        if (usuarioId){
+            res.setHeader('auth-token', createToken({ mail: mail, usuarioId: usuarioId }));
+            res.status(200).json({
+                success: true,
+                data: { usuarioId: usuarioId }
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+export const cambiarContrasena = async (req, res, next) => {
+    try {
+        const { body } = req;
+        const usuario = await model.cambiarContrasena(body);
+    
+        if (usuario){
+            res.status(200).json({
+                success: true,
+                data: usuario
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const setTokenNotificacionUsuario = async (req, res, next) => {
+    try {
+        const { body } = req;
+        const usuario = await model.setTokenNotificacion(body);
+
+        if (usuario){
+            res.status(200).json({
+                success: true,
+                data: usuario
+            });
+        }else{
+            res.status(404).json({
+                success: false,
+                data: {
+                    message: "Not found"
+                }
+            });
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const verHistorial = async (req, res, next) => {
+    try {
+        const { usuarioId } = req.params;
         // hacer la busqueda de historiales
         const alertasEmitidas = await model.getHistorialAlertasEmitidas(usuarioId);
         const alertasAcudidas = await model.getHistorialAlertasAcudidas(usuarioId);
 
         res.status(201).json({
-            emitidas: alertasEmitidas,
-            acudidas: alertasAcudidas
+            success: true,
+            data: {
+                emitidas: alertasEmitidas,
+                acudidas: alertasAcudidas
+            }
         });
     
     } catch (err) {
-        console.log(err)
-        res.status(500).json(err);
+        next(err);
     }
-
 }

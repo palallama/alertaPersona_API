@@ -9,6 +9,7 @@ import { initializeApp, applicationDefault } from 'firebase-admin/app';
 import https from 'https';
 
 import routerV1 from './routers/router.v1.js';
+import { errorHandler, logErrors, wrapErrors } from './helpers/middleware/errorMiddleware.js';
 
 initializeApp({
     credential: applicationDefault()
@@ -16,11 +17,12 @@ initializeApp({
 
 
 const app = express();
+/*
 const options = {
     key: fs.readFileSync('./cert/localhost+2-key.pem'),
     cert: fs.readFileSync('./cert/localhost+2.pem')
 }
-
+*/
 const ACCEPTED_ORIGINS =[
     'http://localhost:8100',
     'https://localhost'
@@ -52,9 +54,18 @@ app.use(express.json());
 // Rutas
 app.use('/api/v1', routerV1);
 
+// notFound
+// app.use(notFoundMiddleware)
+
+// Error middleware
+app.use(logErrors);
+app.use(wrapErrors);
+app.use(errorHandler);
+
+
 // app.options = options;
 
-const server = https.createServer(options, app);
+//const server = https.createServer(options, app);
 
 // export default server;
 export default app;

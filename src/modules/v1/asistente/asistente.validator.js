@@ -9,17 +9,19 @@ import z from 'zod';
 }
 **/
 
-const asistenteEsquema = z.object({
+const esquema = z.object({
     alerta: z.string(),
     usuario: z.number().positive(),
     observaciones: z.string().max(200),
     estado: z.string().length(1).optional()
 });
 
-export const validarAsistente = (input) => {
-    return asistenteEsquema.safeParse(input);
+export const validarId = (input) => {
+    return z.object({ alerta: z.number().positive(), usuario: z.number().positive() }).safeParse(input);
 }
-
-export const validacionParcialAsistente = (input) => {
-    return asistenteEsquema.partial().safeParse(input);
+export const validar = (input) => {
+    return esquema.safeParse(input);
+}
+export const validacionParcial = (input) => {
+    return esquema.partial().safeParse(input);
 }
